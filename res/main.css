@@ -1,0 +1,75 @@
+@media only screen and (min-width: 768px) {
+    .page {
+        height: 768px;
+        width: 60%;
+    }
+    
+    .header {
+        margin-top: 2.5em;
+        font-size: 3.5em;
+    }
+    
+    .subheader {
+        font-size: 2em;
+    }
+    
+    ul {
+        margin-left: 3em;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .page {
+        height: 580px;
+    }
+}
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+}
+
+h2 {
+    float: left;
+}
+
+li {
+    list-style-type: circle;
+    margin-top: 0.5em;
+}
+
+ul {
+    font-size: 125%;
+}
+
+.page {
+    margin: 0 auto;
+}
+
+.header {
+    font-weight: 700;
+}
+
+.subheader {
+    margin-top: -0.3em;
+    font-weight: 700;
+    float: left;
+}
+
+a {
+    color: #3A3A3A;
+    padding-left: 0.2em;
+}
+
+.arrow {
+    margin-top: 5em;
+    transition: opacity 0.5s ease;
+    opacity: 0.3;
+    width: 5em;
+    float: right;
+    clear: both;
+} 
+
+.arrow:hover {
+    opacity: 0.8;
+}
