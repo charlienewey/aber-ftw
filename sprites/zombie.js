@@ -79,8 +79,8 @@ function keyDownHandler(event) {
      * Right = 39
      */
 
-    var key, chr = event.keyCode;
-    chr = String.fromCharCode(chr);
+    var chr, key = event.keyCode;
+    chr = String.fromCharCode(key);
 
     if (key === 38 || chr === 'W') {
         // Move up
@@ -101,8 +101,8 @@ function keyDownHandler(event) {
 }
 
 function keyUpHandler(event) {
-    var key, chr = event.keyCode;
-    chr = String.fromCharCode(chr);
+    var chr, key = event.keyCode;
+    chr = String.fromCharCode(key);
 
     if ((key === 38 || chr === 'W') ||
             (key === 40 || chr === 'S') ||
