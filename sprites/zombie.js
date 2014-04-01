@@ -19,7 +19,7 @@ zom.img.onload = // function below
 zom.dir = "";
 
 zom.moving = false;
-zom.spd = 5; // Movement speed
+zom.spd = 8; // Movement speed
 
 zom.xpos = 0; // Position on canvas
 zom.ypos = 0;
@@ -60,7 +60,7 @@ function move(spr) {
 function update() {
     move(zom); // Refresh zombie character
 }
-setInterval(update, 50); // Set canvas to update at 20fps (1000/20)ms
+window.requestAnimationFrame(update, (1000/20));
 
 /*
  *  Keyboard interaction
