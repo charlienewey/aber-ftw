@@ -1,4 +1,3 @@
-"use strict";
 /*jslint browser:true */
 
 // Init globals
@@ -14,10 +13,11 @@ zom.img = new Image();
 zom.img.src = 'img/zomb.png';
 zom.img.onload = // function below
     function () {
+        'use strict';
         ctx.drawImage(zom.img, zom.animx, zom.animy, zom.w, zom.h, zom.xpos, zom.ypos, zom.w * 2, zom.h * 2);
     };
-zom.dir = "";
 
+zom.dir = "";
 zom.moving = false;
 zom.spd = 8; // Movement speed
 
@@ -26,10 +26,24 @@ zom.ypos = 0;
 
 zom.animx = 0; // Offset within animation (time)
 zom.animy = 0; // Offset within animation (direction)
+
 zom.w = 32;
 zom.h = 32;
 
+function load() {
+    'use strict';
+    window.setInterval(update, (1000 / 20));
+    document.addEventListener('keydown', keyDownHandler, false);
+    document.addEventListener('keyup', keyUpHandler, false);
+}
+
+function update() {
+    'use strict';
+    move(zom); // Refresh zombie character
+}
+
 function move(spr) {
+    'use strict';
     if (spr.moving) {
         var d = spr.dir;
         if (d === 'U') {
@@ -45,32 +59,31 @@ function move(spr) {
             spr.xpos += spr.spd;
             spr.animy = 64;
         }
-
+        
+        // Loop animation
         spr.animx += 32;
         if (spr.animx >= 96) {
             spr.animx = 0;
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    ctx.drawImage(spr.img, spr.animx, spr.animy, spr.w, spr.h,
+        ctx.drawImage(spr.img, spr.animx, spr.animy, spr.w, spr.h,
                     spr.xpos, spr.ypos, spr.w * 2, spr.h * 2);
+    }
 }
-
-function update() {
-    move(zom); // Refresh zombie character
-}
-window.requestAnimationFrame(update, (1000/20));
 
 /*
  *  Keyboard interaction
  */
 function setDirection(direction, zom) {
+    'use strict';
     zom.dir = direction;
     zom.moving = true;
 }
 
 function keyDownHandler(event) {
+    'use strict';
+    
     /*
      * Useful key codes:
      * Up = 38
@@ -78,22 +91,21 @@ function keyDownHandler(event) {
      * Left = 37
      * Right = 39
      */
-
-    var chr, key = event.keyCode;
-    chr = String.fromCharCode(key);
-
-    if (key === 38 || chr === 'W') {
+    var chr = String.fromCharCode(event.keyCode);
+    if (chr === 'W') {
         // Move up
         setDirection('U', zom);
-    } else if (key === 40 || chr === 'S') {
+    } else if (chr === 'S') {
         // Move down
         setDirection('D', zom);
-    } else if (key === 37 || chr === 'A') {
+    } else if (chr === 'A') {
         // Move left
         setDirection('L', zom);
-    } else if (key === 39 || chr === 'D') {
+    } else if (chr === 'D') {
         // Move right
         setDirection('R', zom);
+    } else {
+        zom.moving = false;
     }
 
     document.getElementById('key').innerHTML = "Direction: " + zom.dir;
@@ -101,18 +113,14 @@ function keyDownHandler(event) {
 }
 
 function keyUpHandler(event) {
-    var chr, key = event.keyCode;
-    chr = String.fromCharCode(key);
+    'use strict';
 
-    if ((key === 38 || chr === 'W') ||
-            (key === 40 || chr === 'S') ||
-            (key === 37 || chr === 'A') ||
-            (key === 39 || chr === 'D')) {
+    var chr = String.fromCharCode(event.keyCode);
+    if ((chr === 'W') ||
+            (chr === 'S') ||
+            (chr === 'A') ||
+            (chr === 'D')) {
         zom.moving = false;
     }
-}
-
-function load() {
-    document.addEventListener('keydown', keyDownHandler, false);
-    document.addEventListener('keyup', keyUpHandler, false);
+    move(zom);
 }
