@@ -20,7 +20,6 @@ zom.img.onload = function () {
 };
 
 zom.dir = "";
-zom.moving = false;
 zom.spd = 8; // Movement speed
 
 zom.xpos = 0; // Position on canvas
@@ -40,7 +39,6 @@ function setDirection(direction, zom) {
     
     connection.send(direction);
     zom.dir = direction;
-    zom.moving = true;
 }
 
 function keyDownHandler(event) {
@@ -90,6 +88,11 @@ function load() {
 	connection.onerror = function (error) {
         console.log('WebSocket Error');
 	};
+    
+    // If connection dies, open another
+    connection.onclose = function () {
+        connection = new WebSocket('ws://ws.assemblyco.de');
+    };
 
     // Log messages from the server
     connection.onmessage = function (e) {
