@@ -29,6 +29,11 @@
     font-weight: 400;
 }
 
+body {
+    background-image: url('img/bg.jpg');
+    color: #252525;
+}
+
 h2 {
     float: left;
 }
