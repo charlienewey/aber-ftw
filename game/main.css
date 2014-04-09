@@ -1,0 +1,24 @@
+* {
+    font-family: Helvetica, sans-serif,
+}
+
+body {
+    margin: 0 auto;
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+}
+
+canvas {
+    margin: 0 auto;
+    margin-top: 5em;
+    border:1px solid #000000;
+}
+
+p {
+    text-align: left;
+}
+
+button {
+    float: right;
+}
