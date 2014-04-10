@@ -1,22 +1,63 @@
+/*global console*/
 /*jslint browser: true*/
 
-var sprite = {};
-sprite.img = new Image();
-
-sprite.x = 0;
-sprite.y = 0;
-
-sprite.collidingWith = function (s) {
+// Sprite class
+function Sprite(img_id) {
     'use strict';
     
-    // Collision detection of sprites
-    if ((sprite.x) >= (s.x) &&
-            (sprite.x + sprite.img.width) <= (s.x + s.img.width) &&
-            (sprite.y) >= (s.y) &&
-            (sprite.y  + sprite.img.height) <= (s.y + s.img.height)) {
+    // Load image
+    this.img = new Image();
+    this.img.src = document.getElementById(img_id).src;
+    
+    // Position relative to top right of canvas
+    this.x = 0;
+    this.y = 0;
+    
+    // Animation info
+    this.num_frames = 1;
+    this.curr_frame = 0; // Count from 0
+    
+    // Horizontal offset (vertical sprite number)
+    this.sprite_offset = 0; // Count from 0
+    
+    // Frame sizes
+    this.frame_width = this.img.width;
+    this.frame_height = this.img.height;
+}
+
+Sprite.prototype.imageReadyCallback = function () {
+    'use strict';
+    
+    this.frame_width = this.img.width;
+    this.frame_height = this.img.height;
+    
+    console.log(this.img.width, this.img.height);
+};
+
+// Bounding-box collision detection
+Sprite.prototype.collidingWith = function (s) {
+    'use strict';
+    
+    if ((this.x) >= (s.x) &&
+            (this.x + this.frame_width) <= (s.x + s.frame_width) &&
+            (this.x >= s.x) &&
+            (this.y  + this.frame_height) <= (s.y + s.frame_height) &&
+            (this.y >= s.y)) {
         
+        console.log("Collision!");
         return true;
     }
     
     return false;
+};
+
+Sprite.prototype.draw = function (ctx) {
+    'use strict';
+    
+    ctx.drawImage(this.img, // Image
+                  (this.frame_width * this.curr_frame), // Frame position (time)
+                  (this.frame_height * this.sprite_offset), // Sprite number
+                  this.frame_width, this.frame_height, // Portion of image to draw
+                  this.x, this.y, // Position on screen
+                  this.frame_width, this.frame_height); // Size to draw
 };
