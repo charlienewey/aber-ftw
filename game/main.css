@@ -10,6 +10,7 @@ body {
 }
 
 canvas {
+    background-image: url(img/canvas.jpg);
     margin: 0 auto;
     margin-top: 5em;
     border:1px solid #000000;
