@@ -25,15 +25,6 @@ function Sprite(img_id) {
     this.frame_height = this.img.height;
 }
 
-Sprite.prototype.imageReadyCallback = function () {
-    'use strict';
-    
-    this.frame_width = this.img.width;
-    this.frame_height = this.img.height;
-    
-    console.log(this.img.width, this.img.height);
-};
-
 // Bounding-box collision detection
 Sprite.prototype.collidingWith = function (s) {
     'use strict';
@@ -51,6 +42,7 @@ Sprite.prototype.collidingWith = function (s) {
     return false;
 };
 
+// 
 Sprite.prototype.draw = function (ctx) {
     'use strict';
     
