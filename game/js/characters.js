@@ -32,9 +32,6 @@ Character.prototype.collidingWith = function (other_character) {
     return false;
 };
 
-
-
-
 // Inheritance-y stuff for Player
 function Player(health, sprite) {
     'use strict';

@@ -1,11 +1,21 @@
 /*global Character, Player, Sprite*/
 /*jslint browser: true*/
 
-window.onload = function () {
+
+// Set up horrible globals
+var game, canvas, ctx;
+
+
+function movePlayer() {
     'use strict';
     
-    // Set up horrible globals
-    var game, canvas, ctx;
+    game.player.sprite.move(-3, -3, ctx, canvas);
+}
+
+
+// Execute the setup on load
+window.onload = function () {
+    'use strict';
     
     // Set up main Game variable
     game = {};
@@ -17,4 +27,6 @@ window.onload = function () {
     // Set up Player
     game.player = new Player(100, new Sprite('face_sprite'));
     game.player.sprite.draw(ctx);
+    
+    setInterval(movePlayer, 30);
 };
