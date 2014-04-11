@@ -61,3 +61,31 @@ Sprite.prototype.draw = function (ctx) {
                   this.x, this.y, // Position on screen
                   this.frame_width, this.frame_height); // Size to draw
 };
+
+Sprite.prototype.move = function (x_diff, y_diff, ctx, canvas) {
+    'use strict';
+    
+    // Clear canvas image
+    ctx.clearRect(this.x, this.y, this.img.width, this.img.height);
+    
+    // Update position
+    this.x += x_diff;
+    this.y += y_diff;
+    
+    // Wrap around screen if sprite goes off edge
+    if (this.x > canvas.width) {
+        this.x -= (canvas.width + this.frame_width);
+    } else if (this.x < (-this.frame_width)) {
+        this.x += (canvas.width + this.frame_width);
+    }
+    
+    // Wrap around screen if sprite goes off edge
+    if (this.y > canvas.height) {
+        this.y -= (canvas.height + this.frame_height);
+    } else if (this.y  < (-this.frame_height)) {
+        this.y += (canvas.height + this.frame_height);
+    }
+    
+    // Redraw with new position
+    this.draw(ctx);
+};
