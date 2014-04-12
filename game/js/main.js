@@ -1,17 +1,19 @@
-/*global Character, Player, Sprite*/
+/*global Character, Player, Sprite, Enemy*/
 /*jslint browser: true*/
 
 
 // Set up horrible globals
 var game, canvas, ctx;
 
-
-function movePlayer() {
+function chase() {
     'use strict';
     
-    game.player.sprite.move(-3, -3, ctx, canvas);
+    if (game.player.collidingWith(game.otherChar)) {
+        return;
+    }
+    
+    game.otherChar.moveTowards(game.player, ctx, canvas);
 }
-
 
 // Execute the setup on load
 window.onload = function () {
@@ -28,5 +30,12 @@ window.onload = function () {
     game.player = new Player(100, new Sprite('face_sprite'));
     game.player.sprite.draw(ctx);
     
-    setInterval(movePlayer, 30);
+    // Set up random other character
+    game.otherChar = new Enemy(100, new Sprite('face_sprite'), 5);
+    game.otherChar.sprite.draw(ctx);
+    game.otherChar.sprite.x = ((canvas.width - game.otherChar.sprite.frame_width) / 2);
+    game.otherChar.sprite.y = ((canvas.height - game.otherChar.sprite.frame_height) / 2);
+    game.otherChar.sprite.draw(ctx);
+    
+    setInterval(chase, 100);
 };

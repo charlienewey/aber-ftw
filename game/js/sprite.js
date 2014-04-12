@@ -29,20 +29,13 @@ function Sprite(img_id) {
 Sprite.prototype.collidingWith = function (s) {
     'use strict';
     
-    if ((this.x) >= (s.x) &&
-            (this.x + this.frame_width) <= (s.x + s.frame_width) &&
-            (this.x >= s.x) &&
-            (this.y  + this.frame_height) <= (s.y + s.frame_height) &&
-            (this.y >= s.y)) {
-        
-        console.log("Collision!");
-        return true;
-    }
-    
-    return false;
+    return (((this.x + this.frame_width) >= (s.x)) &&
+            ((this.x + this.frame_width) <= (s.x + s.frame_width)) &&
+            ((this.y + this.frame_height) >= (s.y)) &&
+            ((this.y + this.frame_height) <= (s.y + s.frame_height)));
 };
 
-// 
+// Draw image on canvas
 Sprite.prototype.draw = function (ctx) {
     'use strict';
     
@@ -67,15 +60,19 @@ Sprite.prototype.move = function (x_diff, y_diff, ctx, canvas) {
     // Wrap around screen if sprite goes off edge
     if (this.x > canvas.width) {
         this.x -= (canvas.width + this.frame_width);
+        console.log("Wrap");
     } else if (this.x < (-this.frame_width)) {
         this.x += (canvas.width + this.frame_width);
+        console.log("Wrap");
     }
     
     // Wrap around screen if sprite goes off edge
     if (this.y > canvas.height) {
         this.y -= (canvas.height + this.frame_height);
+        console.log("Wrap");
     } else if (this.y  < (-this.frame_height)) {
         this.y += (canvas.height + this.frame_height);
+        console.log("Wrap");
     }
     
     // Redraw with new position
