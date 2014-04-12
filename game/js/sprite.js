@@ -29,10 +29,16 @@ function Sprite(img_id) {
 Sprite.prototype.collidingWith = function (s) {
     'use strict';
     
-    return (((this.x + this.frame_width) >= (s.x)) &&
-            ((this.x + this.frame_width) <= (s.x + s.frame_width)) &&
-            ((this.y + this.frame_height) >= (s.y)) &&
-            ((this.y + this.frame_height) <= (s.y + s.frame_height)));
+    if (
+            ((this.x + this.frame_width) >= s.x) &&
+            (this.x <= (s.x + s.frame_width)) &&
+            ((this.y + this.frame_height) >= s.y) &&
+            (this.y <= (s.y + s.frame_height))) {
+        
+        console.log("Collision!");
+        console.log(s.x, s.y);
+        return true;
+    }
 };
 
 // Draw image on canvas
@@ -53,27 +59,23 @@ Sprite.prototype.move = function (x_diff, y_diff, ctx, canvas) {
     // Clear canvas image
     ctx.clearRect(this.x, this.y, this.img.width, this.img.height);
     
-    // Update position
-    this.x += x_diff;
-    this.y += y_diff;
-    
     // Wrap around screen if sprite goes off edge
     if (this.x > canvas.width) {
-        this.x -= (canvas.width + this.frame_width);
-        console.log("Wrap");
+        x_diff -= (canvas.width + this.frame_width);
     } else if (this.x < (-this.frame_width)) {
-        this.x += (canvas.width + this.frame_width);
-        console.log("Wrap");
+        x_diff += (canvas.width + this.frame_width);
     }
     
     // Wrap around screen if sprite goes off edge
     if (this.y > canvas.height) {
-        this.y -= (canvas.height + this.frame_height);
-        console.log("Wrap");
+        y_diff -= (canvas.height + this.frame_height);
     } else if (this.y  < (-this.frame_height)) {
-        this.y += (canvas.height + this.frame_height);
-        console.log("Wrap");
+        y_diff += (canvas.height + this.frame_height);
     }
+    
+    // Update position
+    this.x += x_diff;
+    this.y += y_diff;
     
     // Redraw with new position
     this.draw(ctx);

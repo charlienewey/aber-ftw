@@ -50,6 +50,14 @@ function Player(health, sprite) {
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;
 
+// Centres the player on the screen
+Player.prototype.centrePlayer = function (canvas, ctx) {
+    'use strict';
+    this.sprite.x = (canvas.width - this.sprite.frame_width) / 2;
+    this.sprite.y = (canvas.height - this.sprite.frame_height) / 2;
+    this.sprite.draw(ctx);
+}
+
 
 /**
  * Enemy class
