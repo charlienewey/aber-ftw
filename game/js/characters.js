@@ -13,7 +13,6 @@ if (typeof Object.create !== 'function') {
     };
 }
 
-
 /**
  * Base Character class
  */
@@ -71,6 +70,7 @@ Enemy.prototype.constructor = Enemy;
 Enemy.prototype.moveTowards = function (character, ctx, canvas) {
     'use strict';
     
+    // Move "this.sprite" towards "character.sprite"
     var x = 0, y = 0;
     if ((this.sprite.x - character.sprite.x) > this.spd) {
         x = -this.spd;
@@ -84,6 +84,17 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
         y = this.spd;
     }
     
-    console.log(this.sprite.x, this.sprite.y, character.sprite.x, character.sprite.y);
+    // Random walk to add a little unpredictability
+    var walk = Math.random();
+    if (walk <= 0.25) {
+        y += Math.floor(Math.random() * this.spd);
+    } else if (walk <= 0.50) {
+        y -= Math.floor(Math.random() * this.spd);
+    } else if (walk <= 0.75) {
+        x += Math.floor(Math.random() * this.spd);
+    } else {
+        x -= Math.floor(Math.random() * this.spd);
+    }
+    
     this.sprite.move(x, y, ctx, canvas);
 };

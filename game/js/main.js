@@ -27,7 +27,9 @@ window.onload = function () {
     ctx = canvas.getContext('2d');
 
     // Set up Player
-    game.player = new Player(100, new Sprite('face_sprite'));
+    game.player = new Player(100, new Sprite('turret'));
+    game.player.sprite.x = 200;
+    game.player.sprite.y = 200;
     game.player.sprite.draw(ctx);
     
     // Set up random other character
