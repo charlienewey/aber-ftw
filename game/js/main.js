@@ -8,7 +8,7 @@ var game, canvas, ctx, interval;
 function chase() {
     'use strict';
     
-    if (game.player.collidingWith(game.otherChar)) {
+    if (game.player.collidingWith(game.otherChar, null)) {
         clearInterval(interval);
     }
     
@@ -33,11 +33,13 @@ window.onload = function () {
     
     // Set up random other character
     game.otherChar = new Enemy(100, new Sprite('zombie'), 3);
+    game.otherChar.sprite.frame_width = 32;
+    game.otherChar.sprite.num_frames = 3;
     
     // http://stackoverflow.com/a/9879291
     var angle = Math.random() * Math.PI * 2;
     game.otherChar.sprite.x = Math.cos(angle) * canvas.width;
     game.otherChar.sprite.y = Math.sin(angle) * canvas.width;
     
-    interval = setInterval(chase, 10);
+    interval = setInterval(chase, 30);
 };

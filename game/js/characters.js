@@ -25,10 +25,13 @@ function Character(health, sprite, spd) {
 }
 
 // Collision detection using the sprite's native method
-Character.prototype.collidingWith = function (other_character) {
+Character.prototype.collidingWith = function (other_character, callback) {
     'use strict';
     
     if (this.sprite.collidingWith(other_character.sprite)) {
+        if (typeof (callback) === "function") {
+            callback();
+        }
         return true;
     }
     
@@ -91,18 +94,10 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
     } else if ((this.sprite.y - character.sprite.y) < 0) {
         y = this.spd;
     }
+
     
-    // Random walk to add a little unpredictability
-    walk = Math.random();
-    if (walk <= 0.25) {
-        y += Math.floor(Math.random() * this.spd);
-    } else if (walk <= 0.50) {
-        y -= Math.floor(Math.random() * this.spd);
-    } else if (walk <= 0.75) {
-        x += Math.floor(Math.random() * this.spd);
-    } else {
-        x -= Math.floor(Math.random() * this.spd);
-    }
+    // Advance frame
+    this.sprite.advanceFrame();
     
     this.sprite.setRotationTowards(character.sprite.x, character.sprite.y, ctx, canvas);
     this.sprite.move(x, y, ctx, canvas);
