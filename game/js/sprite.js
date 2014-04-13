@@ -31,14 +31,10 @@ function Sprite(img_id) {
 Sprite.prototype.collidingWith = function (s) {
     'use strict';
     
-    if (((this.x + this.frame_width) >= s.x) &&
+    return (((this.x + this.frame_width) >= s.x) &&
             (this.x <= (s.x + s.frame_width)) &&
             ((this.y + this.frame_height) >= s.y) &&
-            (this.y <= (s.y + s.frame_height))) {
-        
-        console.log("Collision!");
-        return true;
-    }
+            (this.y <= (s.y + s.frame_height)));
 };
 
 Sprite.prototype.advanceFrame = function () {

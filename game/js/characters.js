@@ -38,6 +38,12 @@ Character.prototype.collidingWith = function (other_character, callback) {
     return false;
 };
 
+Character.prototype.modifyHealth = function (amount) {
+    'use strict';
+    
+    this.health += amount;
+};
+
 /**
  * Player class
  */
@@ -94,7 +100,6 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
     } else if ((this.sprite.y - character.sprite.y) < 0) {
         y = this.spd;
     }
-
     
     // Advance frame
     this.sprite.advanceFrame();
