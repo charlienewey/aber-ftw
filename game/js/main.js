@@ -32,8 +32,8 @@ window.onload = function () {
     game.player.sprite.draw(ctx);
     
     // Set up random other character
-    game.otherChar = new Enemy(100, new Sprite('zombie'), 3);
-    game.otherChar.sprite.frame_width = 32;
+    game.otherChar = new Enemy(100, new Sprite('zombie'), 1);
+    game.otherChar.sprite.frame_width = 42;
     game.otherChar.sprite.num_frames = 3;
     
     // http://stackoverflow.com/a/9879291
