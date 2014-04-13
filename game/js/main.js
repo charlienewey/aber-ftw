@@ -3,7 +3,7 @@
 
 
 // Set up horrible globals
-var game, canvas, ctx;
+var game, canvas, ctx, interval;
 
 function chase() {
     'use strict';
@@ -15,7 +15,6 @@ function chase() {
     game.otherChar.moveTowards(game.player, ctx, canvas);
 }
 
-var interval = 0;
 // Execute the setup on load
 window.onload = function () {
     'use strict';
@@ -33,7 +32,7 @@ window.onload = function () {
     game.player.sprite.draw(ctx);
     
     // Set up random other character
-    game.otherChar = new Enemy(100, new Sprite('face_sprite'), 5);
+    game.otherChar = new Enemy(100, new Sprite('zombie'), 3);
     
     // http://stackoverflow.com/a/9879291
     var angle = Math.random() * Math.PI * 2;

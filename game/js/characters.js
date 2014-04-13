@@ -56,7 +56,7 @@ Player.prototype.centrePlayer = function (canvas, ctx) {
     this.sprite.x = (canvas.width - this.sprite.frame_width) / 2;
     this.sprite.y = (canvas.height - this.sprite.frame_height) / 2;
     this.sprite.draw(ctx);
-}
+};
 
 
 /**
@@ -79,7 +79,7 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
     'use strict';
     
     // Move "this.sprite" towards "character.sprite"
-    var x = 0, y = 0;
+    var x = 0, y = 0, walk = Math.random();
     if ((this.sprite.x - character.sprite.x) > this.spd) {
         x = -this.spd;
     } else if ((this.sprite.x - character.sprite.x) < 0) {
@@ -93,7 +93,7 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
     }
     
     // Random walk to add a little unpredictability
-    var walk = Math.random();
+    walk = Math.random();
     if (walk <= 0.25) {
         y += Math.floor(Math.random() * this.spd);
     } else if (walk <= 0.50) {
@@ -104,5 +104,6 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
         x -= Math.floor(Math.random() * this.spd);
     }
     
+    this.sprite.setRotationTowards(character.sprite.x, character.sprite.y, ctx, canvas);
     this.sprite.move(x, y, ctx, canvas);
 };
