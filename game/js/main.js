@@ -13,9 +13,12 @@ game.playerHealthDecrease = function () {
     console.log("Collision");
     game.player.modifyHealth(-10);
     game.updateHealthBar();
+    game.hitSound.play();
     
     if (game.player.health > 0) {
         game.newZombie();
+    } else {
+        clearInterval(interval);
     }
 };
 
@@ -74,15 +77,19 @@ window.onload = function () {
     game.player.centrePlayer(game_canvas, game_ctx);
     game.player.sprite.draw(game_ctx);
     
-    // Set up health bar
+    // Set up health bar text
     game.health_text = new Sprite('health_text');
     game.health_text.x = 20;
     game.health_text.draw(hud_canvas.getContext('2d'));
     
+    // Set up health bar
     game.health_bar = new Sprite('health_bar');
     game.health_bar.x = game.health_text.x + game.health_text.frame_width + 10;
     game.health_bar.y = game.health_text.y;
     game.updateHealthBar();
+    
+    game.hitSound = document.getElementById('ow');
+    game.fireSound = document.getElementById('ow');
     
     // Zombie
     game.newZombie();
