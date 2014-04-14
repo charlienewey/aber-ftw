@@ -20,13 +20,23 @@
     </head>
 
     <body>
-        <canvas id="canvas" width="800" height="600">
+        <div id="health" width="200" height="55">
+            
+        </div>
+        <canvas id="game_canvas" width="800" height="600">
+            If you can read this, your browser does not support the HTML5 "canvas" tag.
+        </canvas>
+        <canvas id="hud_canvas" width="800" height="600">
             If you can read this, your browser does not support the HTML5 "canvas" tag.
         </canvas>
 
         <!-- Preload images (foolproof method) -->
         <img src="img/zombie.png" id="zombie" width=0 height=0 />
         <img src="img/turret.png" id="turret" width=0 height=0 />
+        <img src="img/barrel.png" id="barrel" width=0 height=0 />
+        <img src="img/bullet.png" id="bullet" width=0 height=0 />
+        <img src="img/health_text.png" id="health_text" width=0 height=0 />
+        <img src="img/health_bar.png" id="health_bar" width=0 height=0 />
         
         <script type="text/javascript" src="js/sprite.js"></script>
         <script type="text/javascript" src="js/characters.js"></script>

@@ -51,7 +51,8 @@ Sprite.prototype.advanceFrame = function () {
 Sprite.prototype.draw = function (ctx) {
     'use strict';
     
-    ctx.save(); // Save current canvas state
+    // Save current canvas state
+    ctx.save();
     
     // Centre image
     ctx.translate(this.x + (this.frame_width / 2),
@@ -80,7 +81,7 @@ Sprite.prototype.clear = function (ctx) {
     
     ctx.save(); // Save current canvas state
     ctx.translate(this.x + (this.frame_width / 2),
-                  this.y + (this.frame_height / 2)); // Move to this location
+                  this.y + (this.frame_height / 2)); // Move to centre of image
     ctx.rotate(this.rotation); // Rotate canvas around centre point
     
     // Move canvas to top right (to clear image)

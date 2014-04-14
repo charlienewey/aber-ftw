@@ -10,10 +10,17 @@ body {
 }
 
 canvas {
-    background-image: url(img/canvas.jpg);
     margin: 0 auto;
-    margin-top: 5em;
+    margin-top: 5em;   
+}
+
+#game_canvas {
+    background-image: url(img/canvas.jpg);
     border:1px solid #000000;
+}
+
+#hud_canvas {
+    margin-top: -800px;
 }
 
 p {
