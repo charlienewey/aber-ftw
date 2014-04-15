@@ -16,10 +16,11 @@ if (typeof Object.create !== 'function') {
 /**
  * Base Character class
  */
-function Character(health, sprite) {
+function Character(sprite, spd) {
     'use strict';
     
     this.sprite = sprite;
+    this.spd = spd;
 }
 
 // Collision detection using the sprite's native method
@@ -86,31 +87,26 @@ Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
 
 // Moves the Enemy towards a given Character
-Enemy.prototype.moveTowards = function (character, ctx, canvas) {
+Enemy.prototype.stepTowards = function (x, y, ctx, canvas) {
     'use strict';
     
-    // Move "this.sprite" towards "character.sprite"
-    var x = 0, y = 0, walk = Math.random();
-    if ((this.sprite.x - character.sprite.x) > this.spd) {
-        x = -this.spd;
-    } else if ((this.sprite.x - character.sprite.x) < 0) {
-        x = this.spd;
+    var x_diff = 0, y_diff = 0;
+    if ((this.sprite.x - x) > this.spd) {
+        x_diff = -this.spd;
+    } else if ((this.sprite.x - x) < 0) {
+        x_diff = this.spd;
     }
     
-    if ((this.sprite.y - character.sprite.y) > this.spd) {
-        y = -this.spd;
-    } else if ((this.sprite.y - character.sprite.y) < 0) {
-        y = this.spd;
+    if ((this.sprite.y - y) > this.spd) {
+        y_diff = -this.spd;
+    } else if ((this.sprite.y - y) < 0) {
+        y_diff = this.spd;
     }
     
     // Advance frame
     this.sprite.advanceFrame();
-    
-    this.sprite.setRotationTowards(character.sprite.x,
-                                    character.sprite.y,
-                                    ctx, canvas);
-    
-    this.sprite.move(x, y, ctx, canvas);
+    this.sprite.setRotationTowards(x, y, ctx, canvas);
+    this.sprite.move(x_diff, y_diff, ctx, canvas);
 };
 
 Enemy.destroy = function (ctx) {
@@ -118,6 +114,57 @@ Enemy.destroy = function (ctx) {
     
     // TODO
     
-    // Play destroy animation
     this.clear(ctx);
+};
+
+/**
+ * Bullet class
+ */
+function Bullet(sprite, shoot_from, x, y, ctx, canvas, window) {
+    'use strict';
+    
+    var dist, rect, x_offset, y_offset, x_diff, y_diff;
+    
+    // Assign sprite
+    this.sprite = sprite;
+    
+    // Centre of sprite
+    this.sprite.x = shoot_from.sprite.x + (shoot_from.sprite.frame_width / 2);
+    this.sprite.y = shoot_from.sprite.y;
+    
+    // Assign speed
+    this.spd = 5;
+    
+    // Calculate coordinate offsets
+    rect = canvas.getBoundingClientRect();
+    x_offset = ((x - rect.left) - this.sprite.x);
+    y_offset = ((y - rect.top) - this.sprite.y);
+    
+    // Rotate towards mouse pointer
+    this.sprite.setRotationTowards((x - rect.left), (y - rect.top), ctx, canvas);
+    
+    // Add differences
+    this.x_diff = Math.sin(this.sprite.rotation) * this.spd;
+    this.y_diff = -Math.cos(this.sprite.rotation) * this.spd;
+}
+
+// Set up constructor and prototype inheritance
+Bullet.prototype = Object.create(Character.prototype);
+Bullet.prototype.constructor = Bullet;
+
+// Step motion towards pointer
+Bullet.prototype.moveStep = function (ctx, canvas) {
+    'use strict';
+    
+    // Clear old image
+    this.sprite.clear(ctx);
+    
+    // Update position
+    this.sprite.x += this.x_diff;
+    this.sprite.y += this.y_diff;
+    
+    // Redraw
+    this.sprite.advanceFrame();
+    this.sprite.draw(ctx);
+    
 };

@@ -41,7 +41,7 @@ Sprite.prototype.advanceFrame = function () {
     'use strict';
     
     if (this.curr_frame < (this.num_frames - 1)) {
-        this.curr_frame++;
+        this.curr_frame += 1;
     } else {
         this.curr_frame = 0;
     }
@@ -85,8 +85,7 @@ Sprite.prototype.clear = function (ctx) {
     ctx.rotate(this.rotation); // Rotate canvas around centre point
     
     // Move canvas to top right (to clear image)
-    ctx.translate(-this.frame_width / 2,
-                  -this.frame_height / 2);
+    ctx.translate(-this.frame_width / 2, -this.frame_height / 2);
     
     ctx.clearRect(0, 0, this.frame_width, this.frame_height); // Wipe image
     

@@ -1,8 +1,11 @@
-/*global Character, Player, Sprite, Enemy, console*/
+/*global Character, Player, Sprite, Enemy, Bullet, console*/
 /*jslint browser: true*/
 
 // Set up bad, evil globals
-var game, game_canvas, hud_canvas, game_ctx, hud_ctx;
+var game,
+    bul_canvas, bul_ctx,
+    game_canvas, game_ctx,
+    hud_canvas, hud_ctx;
 
 // Set up main Game
 game = {};
@@ -29,8 +32,11 @@ game.updateHealthBar = function () {
 
 game.chase = function () {
     'use strict';
+    var i;
     
-    game.otherChar.moveTowards(game.player, game_ctx, game_canvas);
+    game.otherChar.stepTowards(game.player.sprite.x,
+                               game.player.sprite.y,
+                               game_ctx, game_canvas);
     
     if (game.player.collidingWith(game.otherChar, game.playerHealthDecrease)) {
         if (game.player.health > 0) {
@@ -40,6 +46,20 @@ game.chase = function () {
             game.otherChar.sprite.clear(game_ctx);
         }
     } else {
+        for (i = 0; i < game.bullets.length; i += 1) {
+            game.bullets[i].moveStep(bul_ctx, bul_canvas);
+            
+            // If projectile goes off-screen, delete it
+            var tmp = game.bullets[i].sprite;
+            if (tmp.x > (bul_canvas.width + tmp.frame_width) ||
+                    tmp.y > (bul_canvas.height + tmp.frame_height) ||
+                    tmp.x < 0 || tmp.y < 0) {
+                
+                tmp.clear(bul_ctx);
+                game.bullets.splice(i, 1);
+            }
+        }
+        
         window.requestAnimationFrame(game.chase);
     }
 };
@@ -67,7 +87,6 @@ game.mainLoop = function () {
 
 game.rotatePlayer = function (event) {
     'use strict';
-    
     var x, y, rect;
     x = event.clientX;
     y = event.clientY;
@@ -75,7 +94,8 @@ game.rotatePlayer = function (event) {
     // Adjust coordinates for document coordinates
     // BoundingClientRect code from: http://stackoverflow.com/a/11396681
     rect = game_canvas.getBoundingClientRect();
-    game.player.sprite.setRotationTowards(x - rect.left, y - rect.top, game_ctx, game_canvas);
+    game.player.sprite.setRotationTowards(x - rect.left, y - rect.top,
+                                          game_ctx, game_canvas);
 
     game.player.sprite.draw(game_ctx);
 };
@@ -84,13 +104,17 @@ game.rotatePlayer = function (event) {
 window.onload = function () {
     'use strict';
     
-    // Load canvas data into variables
+    // Load game canvas data into variables
     game_canvas = document.getElementById('game_canvas');
     game_ctx = game_canvas.getContext('2d');
     
-    // Canvas for info like health, score, etc
+    // Load info canvas data into variables
     hud_canvas = document.getElementById('hud_canvas');
     hud_ctx = hud_canvas.getContext('2d');
+    
+    // Load bullet canvas data into variables
+    bul_canvas = document.getElementById('bullet_canvas');
+    bul_ctx = bul_canvas.getContext('2d');
     
     // Set up sounds
     game.hitSound = document.getElementById('ow');
@@ -101,6 +125,20 @@ window.onload = function () {
     game.player.centrePlayer(game_canvas, game_ctx);
     game.player.sprite.draw(game_ctx);
     window.onmousemove = game.rotatePlayer;
+    
+    // Set up bullet(s)
+    game.bullets = [];
+    window.onmousedown = function (event) {
+        var tmp = new Bullet(new Sprite('bullet'), game.player,
+                   event.clientX, event.clientY,
+                   bul_ctx, bul_canvas, window);
+        
+        tmp.sprite.num_frames = 5;
+        tmp.sprite.frame_width = 20;
+        tmp.sprite.frame_height = 22;
+        
+        game.bullets.push(tmp);
+    };
     
     // Set up health bar text
     game.health_text = new Sprite('health_text');

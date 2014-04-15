@@ -19,7 +19,7 @@ canvas {
     border:1px solid #000000;
 }
 
-#hud_canvas {
+.canvas_layer {
     margin-top: -800px;
 }
 
