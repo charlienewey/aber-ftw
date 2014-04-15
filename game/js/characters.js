@@ -50,12 +50,11 @@ Character.prototype.modifyHealth = function (amount, zeroHealthCallback) {
 /**
  * Player class
  */
-function Player(health, turret_sprite, barrel_sprite) {
+function Player(health, turret_sprite) {
     'use strict';
     
     this.health = health;
     this.sprite = turret_sprite;
-    this.barrel = barrel_sprite;
 }
 
 // Set up constructor and prototype inheritance

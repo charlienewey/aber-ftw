@@ -97,7 +97,7 @@ window.onload = function () {
     game.fireSound = document.getElementById('fire');
 
     // Set up Player
-    game.player = new Player(100, new Sprite('turret'), new Sprite('barrel'));
+    game.player = new Player(100, new Sprite('turret'));
     game.player.centrePlayer(game_canvas, game_ctx);
     game.player.sprite.draw(game_ctx);
     window.onmousemove = game.rotatePlayer;
