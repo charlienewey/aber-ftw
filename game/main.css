@@ -20,7 +20,6 @@ canvas {
 }
 
 .canvas_layer {
-    position: relative;
     margin-top: -800px;
 }
 
