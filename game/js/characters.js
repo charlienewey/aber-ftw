@@ -113,3 +113,12 @@ Enemy.prototype.moveTowards = function (character, ctx, canvas) {
     
     this.sprite.move(x, y, ctx, canvas);
 };
+
+Enemy.destroy = function (ctx) {
+    'use strict';
+    
+    // TODO
+    
+    // Play destroy animation
+    this.clear(ctx);
+};

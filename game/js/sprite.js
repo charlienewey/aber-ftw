@@ -127,12 +127,10 @@ Sprite.prototype.move = function (x_diff, y_diff, ctx, canvas) {
 Sprite.prototype.setRotationTowards = function (x, y, ctx, canvas) {
     'use strict';
     
-    var hyp, opp, rot;
-    
     // Clear image area
     this.clear(ctx);
     
     // Calculate rotation for sprite
-    rot = Math.atan2((y - this.y), (x - this.x)) + (Math.PI / 2);
+    var rot = Math.atan2((y - this.y), (x - this.x)) + (Math.PI / 2);
     this.rotation = rot;
 };
