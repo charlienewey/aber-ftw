@@ -19,7 +19,11 @@ canvas {
     border:1px solid #000000;
 }
 
-.canvas_layer {
+#hud_canvas {
+    margin-top: -800px;
+}
+
+#bullet_canvas {
     margin-top: -800px;
 }
 
