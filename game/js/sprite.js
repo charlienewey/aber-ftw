@@ -33,21 +33,25 @@ function Sprite(img_id) {
 // Bounding-box collision detection
 Sprite.prototype.collidingWith = function (s) {
     'use strict';
-    
+
     return (((this.x + this.frame_width) >= s.x) &&
             (this.x <= (s.x + s.frame_width)) &&
             ((this.y + this.frame_height) >= s.y) &&
             (this.y <= (s.y + s.frame_height)));
 };
 
-Sprite.prototype.advanceFrame = function () {
+Sprite.prototype.advanceFrame = function (playOnce) {
     'use strict';
     
     if (this.frame_factor >= this.frame_delay_factor) {
-        if (this.curr_frame < (this.num_frames - 1)) {
-            this.curr_frame += 1;
+        if (!playOnce) {
+            if (this.curr_frame < (this.num_frames - 1)) {
+                this.curr_frame += 1;
+            } else {
+                this.curr_frame = 0;
+            }
         } else {
-            this.curr_frame = 0;
+            this.curr_frame += 1;
         }
         this.frame_factor = 0;
     }

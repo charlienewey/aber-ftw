@@ -75,10 +75,12 @@ Player.prototype.centrePlayer = function (canvas, ctx) {
 /**
  * Enemy class
  */
-function Enemy(sprite, spd) {
+function Enemy(sprite, destroySprite, spd) {
     'use strict';
     
     this.sprite = sprite;
+    this.destroySprite = destroySprite;
+    this.destroyed = false;
     this.spd = spd;
 }
 
@@ -87,34 +89,46 @@ Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
 
 // Moves the Enemy towards a given Character
-Enemy.prototype.stepTowards = function (x, y, ctx, canvas) {
+Enemy.prototype.stepTowards = function (x, y, ctx, canvas, destroyCallback) {
     'use strict';
     
-    var x_diff = 0, y_diff = 0;
-    if ((this.sprite.x - x) > this.spd) {
-        x_diff = -this.spd;
-    } else if ((this.sprite.x - x) < 0) {
-        x_diff = this.spd;
+    if (this.destroyed === false) {
+        var x_diff = 0, y_diff = 0;
+        if ((this.sprite.x - x) > this.spd) {
+            x_diff = -this.spd;
+        } else if ((this.sprite.x - x) < 0) {
+            x_diff = this.spd;
+        }
+
+        if ((this.sprite.y - y) > this.spd) {
+            y_diff = -this.spd;
+        } else if ((this.sprite.y - y) < 0) {
+            y_diff = this.spd;
+        }
+
+        // Advance frame
+        this.sprite.advanceFrame();
+        this.sprite.setRotationTowards(x, y, ctx, canvas);
+        this.sprite.move(x_diff, y_diff, ctx, canvas);
+    } else {
+        this.destroySprite.clear(ctx);
+        if (this.destroySprite.curr_frame < this.destroySprite.num_frames) {
+            this.destroySprite.draw(ctx);
+            this.destroySprite.advanceFrame(true);
+        } else {
+            destroyCallback();
+        }
     }
-    
-    if ((this.sprite.y - y) > this.spd) {
-        y_diff = -this.spd;
-    } else if ((this.sprite.y - y) < 0) {
-        y_diff = this.spd;
-    }
-    
-    // Advance frame
-    this.sprite.advanceFrame();
-    this.sprite.setRotationTowards(x, y, ctx, canvas);
-    this.sprite.move(x_diff, y_diff, ctx, canvas);
 };
 
-Enemy.destroy = function (ctx) {
+Enemy.prototype.destroy = function (ctx) {
     'use strict';
     
-    // TODO
+    this.destroySprite.x = this.sprite.x;
+    this.destroySprite.y = this.sprite.y;
     
-    this.clear(ctx);
+    this.sprite.clear(ctx);
+    this.destroyed = true;
 };
 
 /**
@@ -166,5 +180,4 @@ Bullet.prototype.moveStep = function (ctx, canvas) {
     // Redraw
     this.sprite.advanceFrame();
     this.sprite.draw(ctx);
-    
 };

@@ -3,9 +3,12 @@
 
 // Set up bad, evil globals
 var game,
-    bul_canvas, bul_ctx,
-    game_canvas, game_ctx,
-    hud_canvas, hud_ctx;
+    bul_canvas,
+    bul_ctx,
+    game_canvas,
+    game_ctx,
+    hud_canvas,
+    hud_ctx;
 
 // Set up main Game
 game = {};
@@ -17,6 +20,13 @@ game.playerHealthDecrease = function () {
     game.player.modifyHealth(-20);
     game.updateHealthBar();
     game.hitSound.play();
+};
+
+game.playerShotZombie = function () {
+    'use strict';
+    
+    console.log("Arg");
+    game.score += game.otherChar.sprite.sprite_offset;
 };
 
 game.updateHealthBar = function () {
@@ -32,37 +42,48 @@ game.updateHealthBar = function () {
 
 game.chase = function () {
     'use strict';
-    var i;
+    
+    var i, tmp;
     
     game.otherChar.stepTowards(game.player.sprite.x,
                                game.player.sprite.y,
-                               game_ctx, game_canvas);
+                               game_ctx, game_canvas,
+                               game.newZombie);
     
     if (game.player.collidingWith(game.otherChar, game.playerHealthDecrease)) {
         if (game.player.health > 0) {
-            game.otherChar.sprite.clear(game_ctx);
+            // Destroy!
+            game.otherChar.destroy(game_ctx);
+            
+            // Fix collision detection
+            game.otherChar.sprite.x = 0;
+            game.otherChar.sprite.y = 0;
+            
+            // Run again
             game.mainLoop();
         } else {
             game.otherChar.sprite.clear(game_ctx);
         }
-    } else {        
+    } else {
         for (i = 0; i < game.bullets.length; i += 1) {
-            var tmp = game.bullets[i];
+            tmp = game.bullets[i];
             
+			// Move bullet
             tmp.moveStep(bul_ctx, bul_canvas);
             
             // Check to see if a projectile has collided with a zombie
-            if (tmp.collidingWith(game.otherChar)) {
+            if (tmp.collidingWith(game.otherChar, game.playerShotZombie)) {
                 tmp.sprite.clear(bul_ctx);
                 game.bullets.splice(i, 1);
                 
-                game.otherChar.sprite.clear(game_ctx);
-                game.newZombie();
-            } else if (tmp.sprite.x > (bul_canvas.width + tmp.sprite.frame_width) ||
-                    tmp.sprite.y > (bul_canvas.height + tmp.sprite.frame_height) ||
-                    tmp.sprite.x < 0 || tmp.sprite.y < 0) {
-                
+                game.otherChar.destroy(game_ctx);
+                // game.newZombie();
+            } else if (
                 // If projectile goes off-screen, delete it
+                (tmp.sprite.x > (bul_canvas.width + tmp.sprite.frame_width) ||
+                tmp.sprite.y > (bul_canvas.height + tmp.sprite.frame_height) ||
+                tmp.sprite.x < 0 || tmp.sprite.y < 0)
+            ) {
                 tmp.sprite.clear(bul_ctx);
                 game.bullets.splice(i, 1);
             }
@@ -78,15 +99,22 @@ game.newZombie = function () {
     var enemySpeed, angle;
     
     // Set up random enemy
-    enemySpeed = Math.floor(Math.random() * (game.level * 2)) + 1;
-    game.otherChar = new Enemy(new Sprite('zombie'), enemySpeed);
+    enemySpeed = Math.floor((Math.random() + 1) * (Math.log(game.score + 1) / 2)) + 1;
+    game.otherChar = new Enemy(new Sprite('zombie'), new Sprite('explosion'), enemySpeed);
     
-    game.otherChar.sprite.frame_width = 64;
-    game.otherChar.sprite.frame_height = 40;
-    
+    // Set up zombie sprite
+    game.otherChar.sprite.frame_width = 40;
+    game.otherChar.sprite.frame_height = 25;
     game.otherChar.sprite.num_frames = 3;
+    
     game.otherChar.sprite.sprite_offset = Math.floor(Math.random() * 3);
     game.otherChar.sprite.frame_delay_factor = 5;
+    
+    // Set up explosion sprite
+    game.otherChar.destroySprite.frame_height = 48;
+    game.otherChar.destroySprite.frame_width = 40;
+    game.otherChar.destroySprite.num_frames = 5;
+    game.otherChar.destroySprite.frame_delay_factor = 5;
     
     // http://stackoverflow.com/a/9879291
     angle = Math.random() * Math.PI * 2;
@@ -109,10 +137,27 @@ game.rotatePlayer = function (event) {
     game.player.sprite.draw(game_ctx);
 };
 
+game.fireBullet = function (event) {
+    'use strict';
+    
+    var tmp = new Bullet(new Sprite('bullet'), game.player,
+               event.clientX, event.clientY,
+               bul_ctx, bul_canvas, window);
+
+    tmp.sprite.num_frames = 5;
+    tmp.sprite.frame_width = 20;
+    tmp.sprite.frame_height = 22;
+
+    game.bullets.push(tmp);
+
+    game.fireSound.currentTime = 0;
+    game.fireSound.play();
+};
+
 game.mainLoop = function () {
     'use strict';
     
-    game.newZombie();
+    // game.newZombie();
     window.requestAnimationFrame(game.chase);
 };
 
@@ -135,6 +180,9 @@ window.onload = function () {
     // Set up sounds
     game.hitSound = document.getElementById('ow');
     game.fireSound = document.getElementById('fire');
+    
+    // Score
+    game.score = 0;
 
     // Set up Player
     game.player = new Player(100, new Sprite('turret'));
@@ -144,20 +192,7 @@ window.onload = function () {
     
     // Set up bullet(s)
     game.bullets = [];
-    window.onmousedown = function (event) {
-        var tmp = new Bullet(new Sprite('bullet'), game.player,
-                   event.clientX, event.clientY,
-                   bul_ctx, bul_canvas, window);
-        
-        tmp.sprite.num_frames = 5;
-        tmp.sprite.frame_width = 20;
-        tmp.sprite.frame_height = 22;
-        
-        game.bullets.push(tmp);
-        
-        game.fireSound.currentTime = 0;
-        game.fireSound.play();
-    };
+    window.onmousedown = game.fireBullet;
     
     // Set up health bar text
     game.health_text = new Sprite('health_text');
@@ -174,5 +209,6 @@ window.onload = function () {
     game.level = 1;
     
     // Kick off main loop
+    game.newZombie();
     game.mainLoop();
 };
