@@ -117,7 +117,7 @@ game.chase = function () {
 game.replaceZombie = function (i) {
     'use strict';
     
-    game.zombies[i].destroy(game_ctx);
+    game.zombies[i].destroy(bul_ctx);
     game.newZombie();
 };
 
