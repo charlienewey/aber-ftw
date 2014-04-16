@@ -199,6 +199,9 @@ window.onload = function () {
     // Load game canvas data into variables
     game_canvas = document.getElementById('game_canvas');
     game_ctx = game_canvas.getContext('2d');
+    game_canvas.onmousedown = function () {
+        return false;
+    };
     
     // Load info canvas data into variables
     hud_canvas = document.getElementById('hud_canvas');
