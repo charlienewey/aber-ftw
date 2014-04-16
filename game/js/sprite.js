@@ -1,6 +1,5 @@
 /*global console*/
 /*jslint browser: true*/
-/*jslint plusplus: true */
 
 // Sprite class
 function Sprite(img_id) {
@@ -9,6 +8,10 @@ function Sprite(img_id) {
     // Load image
     this.img = new Image();
     this.img.src = document.getElementById(img_id).src;
+    
+    // Frame delay factors (slow down advance of frames in animation)
+    this.frame_delay_factor = 0;
+    this.frame_factor = 0;
     
     // Position relative to top right of canvas
     this.x = 0;
@@ -40,11 +43,15 @@ Sprite.prototype.collidingWith = function (s) {
 Sprite.prototype.advanceFrame = function () {
     'use strict';
     
-    if (this.curr_frame < (this.num_frames - 1)) {
-        this.curr_frame += 1;
-    } else {
-        this.curr_frame = 0;
+    if (this.frame_factor >= this.frame_delay_factor) {
+        if (this.curr_frame < (this.num_frames - 1)) {
+            this.curr_frame += 1;
+        } else {
+            this.curr_frame = 0;
+        }
+        this.frame_factor = 0;
     }
+    this.frame_factor += 1;
 };
 
 // Draw image on canvas

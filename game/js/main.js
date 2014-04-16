@@ -45,17 +45,25 @@ game.chase = function () {
         } else {
             game.otherChar.sprite.clear(game_ctx);
         }
-    } else {
+    } else {        
         for (i = 0; i < game.bullets.length; i += 1) {
-            game.bullets[i].moveStep(bul_ctx, bul_canvas);
+            var tmp = game.bullets[i];
             
-            // If projectile goes off-screen, delete it
-            var tmp = game.bullets[i].sprite;
-            if (tmp.x > (bul_canvas.width + tmp.frame_width) ||
-                    tmp.y > (bul_canvas.height + tmp.frame_height) ||
-                    tmp.x < 0 || tmp.y < 0) {
+            tmp.moveStep(bul_ctx, bul_canvas);
+            
+            // Check to see if a projectile has collided with a zombie
+            if (tmp.collidingWith(game.otherChar)) {
+                tmp.sprite.clear(bul_ctx);
+                game.bullets.splice(i, 1);
                 
-                tmp.clear(bul_ctx);
+                game.otherChar.sprite.clear(game_ctx);
+                game.newZombie();
+            } else if (tmp.sprite.x > (bul_canvas.width + tmp.sprite.frame_width) ||
+                    tmp.sprite.y > (bul_canvas.height + tmp.sprite.frame_height) ||
+                    tmp.sprite.x < 0 || tmp.sprite.y < 0) {
+                
+                // If projectile goes off-screen, delete it
+                tmp.sprite.clear(bul_ctx);
                 game.bullets.splice(i, 1);
             }
         }
@@ -64,7 +72,7 @@ game.chase = function () {
     }
 };
 
-game.mainLoop = function () {
+game.newZombie = function () {
     'use strict';
     
     var enemySpeed, angle;
@@ -72,17 +80,18 @@ game.mainLoop = function () {
     // Set up random enemy
     enemySpeed = Math.floor(Math.random() * (game.level * 2)) + 1;
     game.otherChar = new Enemy(new Sprite('zombie'), enemySpeed);
+    
     game.otherChar.sprite.frame_width = 64;
     game.otherChar.sprite.frame_height = 40;
+    
     game.otherChar.sprite.num_frames = 3;
     game.otherChar.sprite.sprite_offset = Math.floor(Math.random() * 3);
+    game.otherChar.sprite.frame_delay_factor = 5;
     
     // http://stackoverflow.com/a/9879291
     angle = Math.random() * Math.PI * 2;
     game.otherChar.sprite.x = Math.cos(angle) * game_canvas.width;
     game.otherChar.sprite.y = Math.sin(angle) * game_canvas.width;
-    
-    window.requestAnimationFrame(game.chase);
 };
 
 game.rotatePlayer = function (event) {
@@ -98,6 +107,13 @@ game.rotatePlayer = function (event) {
                                           game_ctx, game_canvas);
 
     game.player.sprite.draw(game_ctx);
+};
+
+game.mainLoop = function () {
+    'use strict';
+    
+    game.newZombie();
+    window.requestAnimationFrame(game.chase);
 };
 
 // Run the main game when loaded
@@ -138,6 +154,9 @@ window.onload = function () {
         tmp.sprite.frame_height = 22;
         
         game.bullets.push(tmp);
+        
+        game.fireSound.currentTime = 0;
+        game.fireSound.play();
     };
     
     // Set up health bar text
