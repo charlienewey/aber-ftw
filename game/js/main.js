@@ -24,7 +24,7 @@ game.playerHealthDecrease = function () {
 
 game.playerShotZombie = function () {
     'use strict';
-    
+    // TODO
     console.log("Arg");
     game.score += game.otherChar.sprite.sprite_offset;
 };
@@ -53,7 +53,8 @@ game.chase = function () {
     if (game.player.collidingWith(game.otherChar, game.playerHealthDecrease)) {
         if (game.player.health > 0) {
             // Destroy!
-            game.otherChar.destroy(game_ctx);
+            game.otherChar.sprite.clear(game_ctx);
+            game.otherChar.destroy(bul_ctx);
             
             // Fix collision detection
             game.otherChar.sprite.x = 0;
