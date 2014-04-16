@@ -27,7 +27,7 @@ function Character(sprite, spd) {
 Character.prototype.collidingWith = function (other_character, callback) {
     'use strict';
     
-    if (this.sprite.collidingWith(other_character.sprite)) {
+    if (this.sprite.collidingWith(other_character.sprite) === true) {
         if (typeof (callback) === "function") {
             callback();
         }
@@ -116,7 +116,8 @@ Enemy.prototype.stepTowards = function (x, y, ctx, canvas, destroyCallback) {
             this.destroySprite.draw(ctx);
             this.destroySprite.advanceFrame(true);
         } else {
-            destroyCallback();
+            this.sprite.x = 0;
+            this.sprite.y = 0;
         }
     }
 };
@@ -126,6 +127,10 @@ Enemy.prototype.destroy = function (ctx) {
     
     this.destroySprite.x = this.sprite.x;
     this.destroySprite.y = this.sprite.y;
+    
+    // Fix for collision detection - reset location
+    this.sprite.x = 0;
+    this.sprite.y = 0;
     
     this.sprite.clear(ctx);
     this.destroyed = true;

@@ -16,7 +16,6 @@ game = {};
 game.playerHealthDecrease = function () {
     'use strict';
     
-    console.log("Collision");
     game.player.modifyHealth(-20);
     game.updateHealthBar();
     game.hitSound.play();
@@ -24,9 +23,9 @@ game.playerHealthDecrease = function () {
 
 game.playerShotZombie = function () {
     'use strict';
-    // TODO
-    console.log("Arg");
-    game.score += game.otherChar.sprite.sprite_offset;
+    
+    game.score += (game.lastZom.sprite.sprite_offset + 1);
+    console.log("Score: ", game.score);
 };
 
 game.updateHealthBar = function () {
@@ -43,88 +42,119 @@ game.updateHealthBar = function () {
 game.chase = function () {
     'use strict';
     
-    var i, tmp;
+    var i, j, numZoms, zom, bul;
     
-    game.otherChar.stepTowards(game.player.sprite.x,
-                               game.player.sprite.y,
-                               game_ctx, game_canvas,
-                               game.newZombie);
-    
-    if (game.player.collidingWith(game.otherChar, game.playerHealthDecrease)) {
-        if (game.player.health > 0) {
-            // Destroy!
-            game.otherChar.sprite.clear(game_ctx);
-            game.otherChar.destroy(bul_ctx);
-            
-            // Fix collision detection
-            game.otherChar.sprite.x = 0;
-            game.otherChar.sprite.y = 0;
-            
-            // Run again
-            game.mainLoop();
-        } else {
-            game.otherChar.sprite.clear(game_ctx);
-        }
-    } else {
-        for (i = 0; i < game.bullets.length; i += 1) {
-            tmp = game.bullets[i];
-            
-			// Move bullet
-            tmp.moveStep(bul_ctx, bul_canvas);
-            
-            // Check to see if a projectile has collided with a zombie
-            if (tmp.collidingWith(game.otherChar, game.playerShotZombie)) {
-                tmp.sprite.clear(bul_ctx);
-                game.bullets.splice(i, 1);
-                
-                game.otherChar.destroy(game_ctx);
-                // game.newZombie();
-            } else if (
-                // If projectile goes off-screen, delete it
-                (tmp.sprite.x > (bul_canvas.width + tmp.sprite.frame_width) ||
-                tmp.sprite.y > (bul_canvas.height + tmp.sprite.frame_height) ||
-                tmp.sprite.x < 0 || tmp.sprite.y < 0)
-            ) {
-                tmp.sprite.clear(bul_ctx);
-                game.bullets.splice(i, 1);
+    if (game.running) {
+        // Clear out old zombies
+        for (i = 0; i < game.zombies.length; i += 1) {
+            zom = game.zombies[i];
+            if (zom.destroySprite.curr_frame > zom.sprite.num_frames + 1) {
+                console.log("Clear old zombo");
+
+                zom.destroySprite.clear(game_ctx);
+                game.zombies.splice(i, 1);
             }
         }
         
-        window.requestAnimationFrame(game.chase);
+        // Populate with more zombies based on score
+        numZoms = Math.floor((game.score / 30) + 1) - game.zombies.length;
+        for (i = 0; i < numZoms; i += 1) {
+            game.newZombie();
+        }
+
+        for (i = 0; i < game.zombies.length; i += 1) {
+            zom = game.zombies[i];
+
+            zom.stepTowards(game.player.sprite.x,
+                            game.player.sprite.y,
+                            game_ctx, game_canvas);
+
+            if (game.player.collidingWith(zom, game.playerHealthDecrease)) {
+                if (game.player.health > 0) {
+                    // Destroy!
+                    zom.sprite.clear(game_ctx);
+                    game.replaceZombie(i);
+                } else {
+                    zom.sprite.clear(game_ctx);
+                    
+                    console.log("Game over!");
+                    game.running = false;
+                }
+
+            } else {
+                for (j = 0; j < game.bullets.length; j += 1) {
+                    bul = game.bullets[j];
+
+                    // Move bullet
+                    bul.moveStep(bul_ctx, bul_canvas);
+
+                    // Check to see if a projectile has collided with a zombie
+                    game.lastZom = zom;
+                    if (bul.collidingWith(zom, game.playerShotZombie)) {
+                        console.log("Shot zombo");
+
+                        bul.sprite.clear(bul_ctx);
+                        game.bullets.splice(j, 1);
+
+                        zom.sprite.clear(game_ctx);
+                        game.replaceZombie(i);
+                    } else if (
+                        // If projectile goes off-screen, delete it
+                        (bul.sprite.x > (bul_canvas.width + bul.sprite.frame_width) ||
+                        bul.sprite.y > (bul_canvas.height + bul.sprite.frame_height) ||
+                        bul.sprite.x < 0 || bul.sprite.y < 0)
+                    ) {
+                        bul.sprite.clear(bul_ctx);
+                        game.bullets.splice(j, 1);
+                    }
+                }
+            }
+        }
     }
+    window.requestAnimationFrame(game.chase);
+};
+
+game.replaceZombie = function (i) {
+    'use strict';
+    
+    game.zombies[i].destroy(game_ctx);
+    game.newZombie();
 };
 
 game.newZombie = function () {
     'use strict';
     
-    var enemySpeed, angle;
+    var enemySpeed, angle, zom;
     
     // Set up random enemy
-    enemySpeed = Math.floor((Math.random() + 1) * (Math.log(game.score + 1) / 2)) + 1;
-    game.otherChar = new Enemy(new Sprite('zombie'), new Sprite('explosion'), enemySpeed);
+    enemySpeed = 1; //Math.floor((Math.random() + 1) * (Math.log(game.score + 1) / 2)) + 1;
+    zom = new Enemy(new Sprite('zombie'), new Sprite('explosion'), enemySpeed);
     
     // Set up zombie sprite
-    game.otherChar.sprite.frame_width = 40;
-    game.otherChar.sprite.frame_height = 25;
-    game.otherChar.sprite.num_frames = 3;
+    zom.sprite.frame_width = 40;
+    zom.sprite.frame_height = 25;
+    zom.sprite.num_frames = 3;
     
-    game.otherChar.sprite.sprite_offset = Math.floor(Math.random() * 3);
-    game.otherChar.sprite.frame_delay_factor = 5;
+    zom.sprite.sprite_offset = Math.floor(Math.random() * 3);
+    zom.sprite.frame_delay_factor = 5;
     
     // Set up explosion sprite
-    game.otherChar.destroySprite.frame_height = 48;
-    game.otherChar.destroySprite.frame_width = 40;
-    game.otherChar.destroySprite.num_frames = 5;
-    game.otherChar.destroySprite.frame_delay_factor = 5;
+    zom.destroySprite.frame_height = 48;
+    zom.destroySprite.frame_width = 40;
+    zom.destroySprite.num_frames = 5;
+    zom.destroySprite.frame_delay_factor = 5;
     
     // http://stackoverflow.com/a/9879291
     angle = Math.random() * Math.PI * 2;
-    game.otherChar.sprite.x = Math.cos(angle) * game_canvas.width;
-    game.otherChar.sprite.y = Math.sin(angle) * game_canvas.width;
+    zom.sprite.x = Math.cos(angle) * game_canvas.width;
+    zom.sprite.y = Math.sin(angle) * game_canvas.width;
+    
+    game.zombies.push(zom);
 };
 
 game.rotatePlayer = function (event) {
     'use strict';
+    
     var x, y, rect;
     x = event.clientX;
     y = event.clientY;
@@ -141,15 +171,15 @@ game.rotatePlayer = function (event) {
 game.fireBullet = function (event) {
     'use strict';
     
-    var tmp = new Bullet(new Sprite('bullet'), game.player,
+    var bul = new Bullet(new Sprite('bullet'), game.player,
                event.clientX, event.clientY,
                bul_ctx, bul_canvas, window);
 
-    tmp.sprite.num_frames = 5;
-    tmp.sprite.frame_width = 20;
-    tmp.sprite.frame_height = 22;
-
-    game.bullets.push(tmp);
+    bul.sprite.num_frames = 5;
+    bul.sprite.frame_width = 20;
+    bul.sprite.frame_height = 22;
+    
+    game.bullets.push(bul);
 
     game.fireSound.currentTime = 0;
     game.fireSound.play();
@@ -158,7 +188,7 @@ game.fireBullet = function (event) {
 game.mainLoop = function () {
     'use strict';
     
-    // game.newZombie();
+    game.newZombie();
     window.requestAnimationFrame(game.chase);
 };
 
@@ -191,7 +221,11 @@ window.onload = function () {
     game.player.sprite.draw(game_ctx);
     window.onmousemove = game.rotatePlayer;
     
-    // Set up bullet(s)
+    // Set up zombie list
+    game.zombies = [];
+    game.lastZom = null;
+    
+    // Set up bullet list
     game.bullets = [];
     window.onmousedown = game.fireBullet;
     
@@ -206,10 +240,13 @@ window.onload = function () {
     game.health_bar.y = game.health_text.y;
     game.updateHealthBar();
     
-    // Set level
-    game.level = 1;
+    // Set running
+    game.running = true;
+    window.onkeydown = function () {
+        game.running = !game.running; // Toggle running state
+    };
     
     // Kick off main loop
-    game.newZombie();
+    // game.newZombie();
     game.mainLoop();
 };
