@@ -150,7 +150,7 @@ function Bullet(sprite, shoot_from, x, y, ctx, canvas,
     
     // Centre of sprite
     this.sprite.x = shoot_from.sprite.x + (shoot_from.sprite.frame_width / 2);
-    this.sprite.y = shoot_from.sprite.y;
+    this.sprite.y = shoot_from.sprite.y + (shoot_from.sprite.frame_height / 2);
     
     // Assign speed
     this.spd = 5;

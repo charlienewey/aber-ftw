@@ -97,7 +97,6 @@ game.playerHealthDecrease = function () {
 game.playerShotZombie = function () {
     'use strict';
     
-    console.log(game.bullets[0].spd);
     game.score += (game.lastZom.sprite.sprite_offset + 1);
     game.updateScoreHTML();
     console.log('Score: ', game.score);
@@ -288,6 +287,7 @@ window.onload = function () {
     // Set up health bar text
     game.health_text = new Sprite('health_text');
     game.health_text.x = 20;
+    game.health_text.y = 20;
     game.health_text.draw(hud_canvas.getContext('2d'));
     
     // Set up health bar

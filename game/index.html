@@ -19,32 +19,71 @@
 
     <body>
         <!-- Sections for various screens (help, start, game over) -->
-        <section class="game_screen" id="start"></section>
-        <section class="game_screen" id="help"></section>
-        <section class="game_screen" id="game_over"></section>
+        <section class="game_screen" id="start">
+            <h2>Zombie Pendemic</h2>
+            <button id="start">Start</button>
+        </section>
+        <section class="game_screen" id="help">
+            <p>It's 3.08pm on a grey, misty Tuesday in April. You're in Mr. Mason's Maths lesson, 
+                falling asleep to the steady drone of his voice. You're on the verge of sleep, your 
+                eyes drifting in and out of focus - when suddenly you notice a zombie, drawn in the
+                corner of your exercise book.
+            </p>
+                
+            <p>You notice more and more appearing out of nowhere, the onslaught moving towards the
+                turret with every passing frame, and it is your task - nay - your duty, to ensure
+                the turret's survival.
+            </p>
+                
+            <p>Click on the zombies to shoot them. Different zombies have different values;
+                <pre>
+                Red - 1 point, Blue - 2 points, Rreen - 3 points.
+                </pre>
+            </p>
+                
+            <p>The game gets harder as your score improves, with the mass of zombies ever
+                increasing in number.</p><br />
+                
+            <p>Remember - absolutely nobody is counting on you.</p>
+            <p>This is a figment of your bored imagination.</p>
+            <p>Good luck.</p>
+            
+            <button id="begin">Begin</button>
+        </section>
+        <section class="game_screen" id="pause">
+            <button id="start">Resume</button>
+        </section>
+        <section class="game_screen" id="game_over">
+            <p>For you my friend, the lesson is over.</p>
+            <button id="again">Again</button>
+        </section>
         
         <!-- Canvases for layering animations -->
-        <canvas id="game_canvas" width="800" height="600">
-            If you can read this, your browser does not support the HTML5 "canvas" tag.
-        </canvas>
-        <canvas class="canvas_layer" id="bullet_canvas" width="800" height="600">
-            If you can read this, your browser does not support the HTML5 "canvas" tag.
-        </canvas>
-        <canvas class="canvas_layer" id="hud_canvas" width="800" height="600">
-            If you can read this, your browser does not support the HTML5 "canvas" tag.
-        </canvas>
+        <div id="canvas_wrapper">
+            <div id="inner_canvas_wrapper">
+                <canvas id="game_canvas" width="800" height="600">
+                    If you can read this, your browser does not support the HTML5 "canvas" tag.
+                </canvas>
+                <canvas class="canvas_layer" id="bullet_canvas" width="800" height="600">
+                    If you can read this, your browser does not support the HTML5 "canvas" tag.
+                </canvas>
+                <canvas class="canvas_layer" id="hud_canvas" width="800" height="600">
+                    If you can read this, your browser does not support the HTML5 "canvas" tag.
+                </canvas>
+            </div>
+        </div>
         
 		<!-- Placeholder for scores -->
 		<section class="score" id="score"></section>
 		<section class="score" id="highscore"></section>
 
         <!-- Preload images (foolproof method) -->
-        <img class="preload" src="img/zombie.png" id="zombie" />
-        <img class="preload" src="img/explosion.png" id="explosion" />
-        <img class="preload" src="img/turret.png" id="turret" />
-        <img class="preload" src="img/bullet.png" id="bullet" />
-        <img class="preload" src="img/health_text.png" id="health_text" />
-        <img class="preload" src="img/health_bar.png" id="health_bar" />
+        <img class="preload" alt="Zombie sprite" src="img/zombie.png" id="zombie" />
+        <img class="preload" alt="Explosion sprite" src="img/explosion.png" id="explosion" />
+        <img class="preload" alt="Turret image" src="img/turret.png" id="turret" />
+        <img class="preload" alt="Bullet image" src="img/bullet.png" id="bullet" />
+        <img class="preload" alt="Health text" src="img/health_text.png" id="health_text" />
+        <img class="preload" alt="Health bar" src="img/health_bar.png" id="health_bar" />
         
         <!-- Preload sound -->
         <audio id="ow">
