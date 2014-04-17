@@ -20,53 +20,57 @@
         </script>
     </head>
 
-    <body>
-        <!-- Title -->
-        <h1>Zombie Pendemic*</h1>
-        <p class="small">*Pun intended</p>
-        
-        <!-- Sections for various screens (help, start, game over) -->
-        <section class="game_screen" id="start">
-            <button>Start</button>
-            <button>Start</button>
-        </section>
-        <section class="game_screen" id="help">
-            <p>It's 3.08pm on a grey, misty Tuesday in April. You're in Mr. Mason's Maths lesson, 
-                falling asleep to the steady drone of his voice. You're on the verge of sleep, your 
-                eyes drifting in and out of focus - when suddenly you notice a zombie, drawn in the
-                corner of your exercise book.
-            </p>
-                
-            <p>You notice more and more appearing out of nowhere, the onslaught moving towards the
-                turret with every passing frame, and it is your task - nay - your duty, to ensure
-                the turret's survival.
-            </p>
-                
-            <p>Click on the zombies to shoot them. Different zombies have different values;
-                Red - 1 point, Blue - 2 points, Green - 3 points.
-            </p>
-                
-            <p>The game gets harder as your score improves, with the mass of zombies ever
-                increasing in number.</p><br />
-                
-            <p>Remember - absolutely nobody is counting on you.</p>
-            <p>This is a figment of your bored imagination.</p>
-            <p>Good luck.</p>
+    <body>    
+        <header>
+            <!-- Title -->
+            <h1>Zombie Pendemic*</h1>
+            <p class="small">*Pun intended</p>
+        </header>
+    
+        <section id="body_wrapper">
+            <img id="help_img" src="img/help.png" alt="Show help screen" onclick="showHideHelp()" />
             
-            <button>Begin</button>
-        </section>
-        <section class="game_screen" id="pause">
-            <button>Resume</button>
-            <button>Resume</button>
-        </section>
-        <section class="game_screen" id="game_over">
-            <p>For you my friend, the lesson is over.</p>
-            <button>Again</button>
-        </section>
-        
-        <!-- Canvases for layering animations -->
-        <div id="canvas_wrapper">
-            <div id="inner_canvas_wrapper">
+            <!-- Sections for various screens (help, start, game over) -->
+            <section id="help" onclick="showHideHelp()">
+                <h2 class="center">Help</h2>
+                <p>It's 3.08pm on a grey, misty Tuesday in April. You're in Mr. Mason's Maths lesson, 
+                    falling asleep to the steady drone of his voice. You're on the verge of sleep, your 
+                    eyes drifting in and out of focus - when suddenly you notice a zombie, drawn in the
+                    corner of your exercise book.
+                </p>
+
+                <p>You notice more and more appearing out of nowhere, the onslaught moving towards your
+                    turret with every passing frame, and it is <em>your</em> task - nay - your <strong>duty</strong>,
+                    to ensure the turret's survival.
+                </p>
+
+                <h3>The controls are simple.</h3>
+                <p>
+                    <strong>Click to shoot</strong> bullets at the marauding zombles. Press <strong>Escape</strong> to pause the game.
+                </p>
+                
+                <br />
+                <h3>Different zombies have different values.</h3>
+                <p>
+                    <ul>
+                        <li>Red - <strong>1 point</strong></li>
+                        <li>Blue - <strong>2 points</strong></li>
+                        <li>Green - <strong>3 points</strong></li>
+                    </ul>
+                </p>
+
+                <p>The game gets harder as your score improves, with the mass of zombies ever
+                    increasing in number and speed. Remember - absolutely nobody is counting
+                    on you. This is a figment of your bored imagination.
+                </p>
+            
+                <p>Good luck.</p>
+                <h3 class="center">Click to begin your mission.</p>
+            </section>
+            
+            <!-- DIV and Canvases for layering animations -->
+            <div id="canvas_wrapper">                
+                <!-- Canvases -->
                 <canvas id="game_canvas" width="800" height="600">
                     If you can read this, your browser does not support the HTML5 "canvas" tag.
                 </canvas>
@@ -77,15 +81,17 @@
                     If you can read this, your browser does not support the HTML5 "canvas" tag.
                 </canvas>
             </div>
-        </div>
+            
+                <!-- Placeholder for scores -->
+                <div id="score_holder">
+                  <h3 id="score"></h3>
+                </div>
+                <div id="highscore_holder">
+                    <h3 id="highscore"></h3>
+                </div>
+        </section>
         
-		<!-- Placeholder for scores -->
-        <div id="score_holder">
-		  <h3 id="score"></h3>
-        </div>
-        <div id="highscore_holder">
-            <h3 id="highscore"></h3>
-        </div>
+		
 
         <!-- Preload images (foolproof method) -->
         <div class="preload">
@@ -109,5 +115,6 @@
         <script type="text/javascript" src="js/sprite.js"></script>
         <script type="text/javascript" src="js/characters.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/messages.js"></script>
     </body>
 </html>

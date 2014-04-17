@@ -116,7 +116,7 @@ game.updateHealthBar = function () {
 game.loadHighScore = function () {
     'use strict';
     
-    if (typeof (Storage) !== 'undefined') {
+    if (Storage !== 'undefined') {
         var hs = localStorage.getItem('highScore');
         
         document.getElementById('highscore').innerHTML = 'High Score: ';
@@ -283,7 +283,22 @@ window.onload = function () {
     
     // Set up bullet list
     game.bullets = [];
-    window.onmousedown = game.fireBullet;
+    window.onmousedown = function (event) {
+        if (game.running) {
+            game.fireBullet(event);
+        }
+    };
+    
+    hud_canvas.onmousedown = function () {
+        if (!game.running) {
+            // Kick off main loop
+            game.running = true;
+            game.mainLoop();
+            
+            // Stop game being able to be started twice!
+            hud_canvas.onmousedown = null;
+        }
+    };
     
     // Set up health bar text
     game.health_text = new Sprite('health_text');
@@ -297,12 +312,11 @@ window.onload = function () {
     game.health_bar.y = game.health_text.y;
     game.updateHealthBar();
     
-    // Set running
-    game.running = true;
-    window.onkeydown = function () {
-        game.running = !game.running; // Toggle running state
+    // Set up params for running and pausing
+    game.running = false;
+    window.onkeydown = function (event) {
+        if (event.keyCode === 27) {
+            game.running = !game.running; // Toggle running state
+        }
     };
-    
-    // Kick off main loop
-    game.mainLoop();
 };

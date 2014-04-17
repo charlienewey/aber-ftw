@@ -135,7 +135,7 @@ Sprite.prototype.move = function (x_diff, y_diff, ctx, canvas) {
 };
 
 // Rotates sprite towards a point
-Sprite.prototype.setRotationTowards = function (x, y, ctx, canvas) {
+Sprite.prototype.setRotationTowards = function (x, y, ctx) {
     'use strict';
     
     // Clear image area

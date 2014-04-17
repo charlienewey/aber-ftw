@@ -28,7 +28,7 @@ Character.prototype.collidingWith = function (other_character, callback) {
     'use strict';
     
     if (this.sprite.collidingWith(other_character.sprite) === true) {
-        if (typeof (callback) === 'function') {
+        if (typeof callback === 'function') {
             callback();
         }
         return true;
@@ -42,7 +42,7 @@ Character.prototype.modifyHealth = function (amount, zeroHealthCallback) {
     
     this.health += amount;
     
-    if ((typeof (zeroHealthCallback) === 'function') &&
+    if ((typeof zeroHealthCallback === 'function') &&
             (this.health <= 0)) {
         zeroHealthCallback();
     }
@@ -89,7 +89,7 @@ Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
 
 // Moves the Enemy towards a given Character
-Enemy.prototype.stepTowards = function (x, y, ctx, canvas, destroyCallback) {
+Enemy.prototype.stepTowards = function (x, y, ctx, canvas) {
     'use strict';
     
     if (this.destroyed === false) {
@@ -143,8 +143,6 @@ function Bullet(sprite, shoot_from, x, y, ctx, canvas,
                  canvas_left, canvas_top) {
     'use strict';
     
-    var dist, rect, x_diff, y_diff;
-    
     // Assign sprite
     this.sprite = sprite;
     
@@ -169,7 +167,7 @@ Bullet.prototype = Object.create(Character.prototype);
 Bullet.prototype.constructor = Bullet;
 
 // Step motion towards pointer
-Bullet.prototype.moveStep = function (ctx, canvas) {
+Bullet.prototype.moveStep = function (ctx) {
     'use strict';
     
     // Clear old image
