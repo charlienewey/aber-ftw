@@ -18,6 +18,11 @@
     </head>
 
     <body>
+        <!-- Sections for various screens (help, start, game over) -->
+        <section class="game_screen" id="start"></section>
+        <section class="game_screen" id="help"></section>
+        <section class="game_screen" id="game_over"></section>
+        
         <!-- Canvases for layering animations -->
         <canvas id="game_canvas" width="800" height="600">
             If you can read this, your browser does not support the HTML5 "canvas" tag.
@@ -28,17 +33,18 @@
         <canvas class="canvas_layer" id="hud_canvas" width="800" height="600">
             If you can read this, your browser does not support the HTML5 "canvas" tag.
         </canvas>
+        
 		<!-- Placeholder for scores -->
 		<section class="score" id="score"></section>
 		<section class="score" id="highscore"></section>
 
         <!-- Preload images (foolproof method) -->
-        <img src="img/zombie.png" id="zombie" width=0 height=0 />
-        <img src="img/explosion.png" id="explosion" width=0 height=0 />
-        <img src="img/turret.png" id="turret" width=0 height=0 />
-        <img src="img/bullet.png" id="bullet" width=0 height=0 />
-        <img src="img/health_text.png" id="health_text" width=0 height=0 />
-        <img src="img/health_bar.png" id="health_bar" width=0 height=0 />
+        <img class="preload" src="img/zombie.png" id="zombie" />
+        <img class="preload" src="img/explosion.png" id="explosion" />
+        <img class="preload" src="img/turret.png" id="turret" />
+        <img class="preload" src="img/bullet.png" id="bullet" />
+        <img class="preload" src="img/health_text.png" id="health_text" />
+        <img class="preload" src="img/health_bar.png" id="health_bar" />
         
         <!-- Preload sound -->
         <audio id="ow">

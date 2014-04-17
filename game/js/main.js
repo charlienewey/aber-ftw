@@ -188,8 +188,6 @@ game.newZombie = function () {
     zom.sprite.y = (Math.cos(angle) * (game_canvas.height / 2)) +
         (game_canvas.height / 2);
     
-    console.log(zom.sprite.x, zom.sprite.y);
-    
     game.zombies.push(zom);
 };
 
