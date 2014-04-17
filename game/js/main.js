@@ -260,6 +260,7 @@ window.onload = function () {
     // Set up bounding stuff
     game.updateBounds();
     window.onresize = game.updateBounds;
+    window.onscroll = game.updateBounds;
     
     // Set up sounds
     game.hitSound = document.getElementById('ow');

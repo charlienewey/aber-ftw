@@ -17,12 +17,18 @@ canvas {
     height: 600px;
 }
 
-#score {
+#score_holder {
     float: left;
+    
+    width: 399px;
+    background-color: #72FF72;
+    border: 1px solid black;
 }
 
-#highscore {
-    float: right;
+#highscore_holder {
+    margin-left: 399px;
+    background-color: #B22C6F;
+    border: 1px solid black;
 }
 
 #game_canvas {
@@ -31,7 +37,7 @@ canvas {
 }
 
 #canvas_wrapper {
-    margin-top: 5em;
+    margin-top: 2em;
     width: 800px;
     height: 600px;
 }
@@ -55,13 +61,12 @@ canvas {
     left: 0px;
 }
 
-.score {
-    margin-left: 1em;
-    margin-right: 1em;
-    text-align: left;
-}
-
 .game_screen {
     display: none;
     text-align: left;
+}
+
+.small {
+    margin-top: -2em;
+    font-size: 70%;
 }

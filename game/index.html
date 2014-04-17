@@ -21,10 +21,14 @@
     </head>
 
     <body>
+        <!-- Title -->
+        <h1>Zombie Pendemic*</h1>
+        <p class="small">*Pun intended</p>
+        
         <!-- Sections for various screens (help, start, game over) -->
         <section class="game_screen" id="start">
-            <h2>Zombie Pendemic</h2>
             <button id="start">Start</button>
+            <button id="help">Start</button>
         </section>
         <section class="game_screen" id="help">
             <p>It's 3.08pm on a grey, misty Tuesday in April. You're in Mr. Mason's Maths lesson, 
@@ -39,9 +43,7 @@
             </p>
                 
             <p>Click on the zombies to shoot them. Different zombies have different values;
-                <pre>
-                Red - 1 point, Blue - 2 points, Rreen - 3 points.
-                </pre>
+                Red - 1 point, Blue - 2 points, Green - 3 points.
             </p>
                 
             <p>The game gets harder as your score improves, with the mass of zombies ever
@@ -77,24 +79,30 @@
         </div>
         
 		<!-- Placeholder for scores -->
-		<h3 class="score" id="score"></h3>
-		<h3 class="score" id="highscore"></h3>
+        <div id="score_holder">
+		  <h3 id="score"></h3>
+        </div>
+        <div id="highscore_holder">
+            <h3 id="highscore"></h3>
+        </div>
 
         <!-- Preload images (foolproof method) -->
-        <img class="preload" alt="Zombie sprite" src="img/zombie.png" id="zombie" />
-        <img class="preload" alt="Explosion sprite" src="img/explosion.png" id="explosion" />
-        <img class="preload" alt="Turret image" src="img/turret.png" id="turret" />
-        <img class="preload" alt="Bullet image" src="img/bullet.png" id="bullet" />
-        <img class="preload" alt="Health text" src="img/health_text.png" id="health_text" />
-        <img class="preload" alt="Health bar" src="img/health_bar.png" id="health_bar" />
-        
-        <!-- Preload sound -->
-        <audio id="ow">
-            <source src="snd/ow.mp3" type="audio/mp3">
-        </audio>
-        <audio id="fire">
-            <source src="snd/fire.mp3" type="audio/mp3">
-        </audio>
+        <div class="preload">
+            <img alt="Zombie sprite" src="img/zombie.png" id="zombie" />
+            <img alt="Explosion sprite" src="img/explosion.png" id="explosion" />
+            <img alt="Turret image" src="img/turret.png" id="turret" />
+            <img alt="Bullet image" src="img/bullet.png" id="bullet" />
+            <img alt="Health text" src="img/health_text.png" id="health_text" />
+            <img alt="Health bar" src="img/health_bar.png" id="health_bar" />
+
+            <!-- Preload sound -->
+            <audio id="ow">
+                <source src="snd/ow.mp3" type="audio/mp3">
+            </audio>
+            <audio id="fire">
+                <source src="snd/fire.mp3" type="audio/mp3">
+            </audio>
+        </div>
         
         <!-- Javascript (the important bit) -->
         <script type="text/javascript" src="js/sprite.js"></script>
