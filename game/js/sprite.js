@@ -111,23 +111,24 @@ Sprite.prototype.move = function (x_diff, y_diff, ctx, canvas) {
     // Clear old image
     this.clear(ctx);
     
+    // Update position
+    this.x += x_diff;
+    this.y += y_diff;
+    
     // Wrap around screen if sprite goes off edge
     if (this.x > canvas.width) {
-        x_diff -= (canvas.width + this.frame_width);
+        this.x = (-this.frame_width);
+        // x_diff -= (canvas.width + this.frame_width);
     } else if (this.x < (-this.frame_width)) {
-        x_diff += (canvas.width + this.frame_width);
+        this.x = (canvas.width + this.frame_width);
     }
     
     // Wrap around screen if sprite goes off edge
     if (this.y > canvas.height) {
-        y_diff -= (canvas.height + this.frame_height);
-    } else if (this.y  < (-this.frame_height)) {
-        y_diff += (canvas.height + this.frame_height);
+        this.y = (-this.frame_height);
+    } else if (this.y < (-this.frame_height)) {
+        this.y = (canvas.height + this.frame_height);
     }
-    
-    // Update position
-    this.x += x_diff;
-    this.y += y_diff;
     
     // Redraw
     this.draw(ctx);

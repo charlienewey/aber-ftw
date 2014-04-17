@@ -11,16 +11,14 @@
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
             ga('create', 'UA-49616512-2', 'aber.ac.uk');
             ga('send', 'pageview');
         </script>
     </head>
 
     <body>
-        <div id="health" width="200" height="55">
-            
-        </div>
+        <!-- Canvases for layering animations -->
         <canvas id="game_canvas" width="800" height="600">
             If you can read this, your browser does not support the HTML5 "canvas" tag.
         </canvas>
@@ -31,8 +29,8 @@
             If you can read this, your browser does not support the HTML5 "canvas" tag.
         </canvas>
 		<!-- Placeholder for scores -->
-		<p id="score"></p>
-		<p id="highscore"></p>
+		<section class="score" id="score"></section>
+		<section class="score" id="highscore"></section>
 
         <!-- Preload images (foolproof method) -->
         <img src="img/zombie.png" id="zombie" width=0 height=0 />
@@ -50,6 +48,7 @@
             <source src="snd/fire.mp3" type="audio/mp3">
         </audio>
         
+        <!-- Javascript (the important bit) -->
         <script type="text/javascript" src="js/sprite.js"></script>
         <script type="text/javascript" src="js/characters.js"></script>
         <script type="text/javascript" src="js/main.js"></script>

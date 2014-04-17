@@ -3,7 +3,7 @@
 
 /* Essentially some horrible JS-hacky way of doing inheritance */
 if (typeof Object.create !== 'function') {
-    // From "Javascript: The Good Parts" - pg 22 (Chapter 3: Objects)
+    // From 'Javascript: The Good Parts' - pg 22 (Chapter 3: Objects)
     Object.create = function (o) {
         'use strict';
         
@@ -28,7 +28,7 @@ Character.prototype.collidingWith = function (other_character, callback) {
     'use strict';
     
     if (this.sprite.collidingWith(other_character.sprite) === true) {
-        if (typeof (callback) === "function") {
+        if (typeof (callback) === 'function') {
             callback();
         }
         return true;
@@ -42,7 +42,7 @@ Character.prototype.modifyHealth = function (amount, zeroHealthCallback) {
     
     this.health += amount;
     
-    if ((typeof (zeroHealthCallback) === "function") &&
+    if ((typeof (zeroHealthCallback) === 'function') &&
             (this.health <= 0)) {
         zeroHealthCallback();
     }
@@ -139,10 +139,11 @@ Enemy.prototype.destroy = function (ctx) {
 /**
  * Bullet class
  */
-function Bullet(sprite, shoot_from, x, y, ctx, canvas, window) {
+function Bullet(sprite, shoot_from, x, y, ctx, canvas,
+                 canvas_left, canvas_top) {
     'use strict';
     
-    var dist, rect, x_offset, y_offset, x_diff, y_diff;
+    var dist, rect, x_diff, y_diff;
     
     // Assign sprite
     this.sprite = sprite;
@@ -154,13 +155,9 @@ function Bullet(sprite, shoot_from, x, y, ctx, canvas, window) {
     // Assign speed
     this.spd = 5;
     
-    // Calculate coordinate offsets
-    rect = canvas.getBoundingClientRect();
-    x_offset = ((x - rect.left) - this.sprite.x);
-    y_offset = ((y - rect.top) - this.sprite.y);
-    
     // Rotate towards mouse pointer
-    this.sprite.setRotationTowards((x - rect.left), (y - rect.top), ctx, canvas);
+    this.sprite.setRotationTowards((x - canvas_left), (y - canvas_top),
+                                   ctx, canvas);
     
     // Add differences
     this.x_diff = Math.sin(this.sprite.rotation) * this.spd;

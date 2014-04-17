@@ -13,44 +13,16 @@ var game,
 // Set up main Game
 game = {};
 
-game.playerHealthDecrease = function () {
-    'use strict';
-    
-    game.player.modifyHealth(-20);
-    game.updateHealthBar();
-    game.hitSound.play();
-};
-
-game.playerShotZombie = function () {
-    'use strict';
-    
-    game.score += (game.lastZom.sprite.sprite_offset + 1);
-    console.log("Score: ", game.score);
-};
-
-game.updateHealthBar = function () {
-    'use strict';
-    
-    // Draw on context "layer" that is in front of main game context
-    // This is so that the sprites don't wipe over the health bar
-    game.health_bar.clear(hud_ctx);
-    game.health_bar.frame_width = Math.floor(game.health_bar.img.width *
-                                                (game.player.health / 100));
-    game.health_bar.draw(hud_ctx);
-};
-
 game.chase = function () {
     'use strict';
     
     var i, j, numZoms, zom, bul;
     
     if (game.running) {
-        // Clear out old zombies
+        // Clear out old zombie sprites
         for (i = 0; i < game.zombies.length; i += 1) {
             zom = game.zombies[i];
             if (zom.destroySprite.curr_frame > zom.sprite.num_frames + 1) {
-                console.log("Clear old zombo");
-
                 zom.destroySprite.clear(game_ctx);
                 game.zombies.splice(i, 1);
             }
@@ -62,6 +34,7 @@ game.chase = function () {
             game.newZombie();
         }
 
+        // Update the game components and redraw necessary parts
         for (i = 0; i < game.zombies.length; i += 1) {
             zom = game.zombies[i];
 
@@ -77,8 +50,9 @@ game.chase = function () {
                 } else {
                     zom.sprite.clear(game_ctx);
                     
-                    console.log("Game over!");
                     game.running = false;
+                    game.updateHighScore();
+                    console.log('Game over!');
                 }
 
             } else {
@@ -91,8 +65,6 @@ game.chase = function () {
                     // Check to see if a projectile has collided with a zombie
                     game.lastZom = zom;
                     if (bul.collidingWith(zom, game.playerShotZombie)) {
-                        console.log("Shot zombo");
-
                         bul.sprite.clear(bul_ctx);
                         game.bullets.splice(j, 1);
 
@@ -114,6 +86,70 @@ game.chase = function () {
     window.requestAnimationFrame(game.chase);
 };
 
+game.playerHealthDecrease = function () {
+    'use strict';
+    
+    game.player.modifyHealth(-20);
+    game.updateHealthBar();
+    game.hitSound.play();
+};
+
+game.playerShotZombie = function () {
+    'use strict';
+    
+    console.log(game.bullets[0].spd);
+    game.score += (game.lastZom.sprite.sprite_offset + 1);
+    game.updateScoreHTML();
+    console.log('Score: ', game.score);
+};
+
+game.updateHealthBar = function () {
+    'use strict';
+    
+    // Draw on context 'layer' that is in front of main game context
+    // This is so that the sprites don't wipe over the health bar
+    game.health_bar.clear(hud_ctx);
+    game.health_bar.frame_width = Math.floor(game.health_bar.img.width *
+                                                (game.player.health / 100));
+    game.health_bar.draw(hud_ctx);
+};
+
+game.loadHighScore = function () {
+    'use strict';
+    
+    if (typeof (Storage) !== 'undefined') {
+        var hs = localStorage.getItem('highScore');
+        
+        document.getElementById('highscore').innerHTML = 'High Score: ';
+        if (hs === null) {
+            document.getElementById('highscore').innerHTML += "0";
+        } else {
+            document.getElementById('highscore').innerHTML += hs;
+        }
+        
+        return hs;
+    }
+};
+
+game.updateHighScore = function () {
+    'use strict';
+    
+    if (game.highscore === null ||
+            game.score > game.highscore) {
+        localStorage.setItem('highScore', game.score);
+    }
+};
+
+game.updateScoreHTML = function () {
+    'use strict';
+    
+    document.getElementById('score').innerHTML = "Score: " + game.score;
+    
+    if (game.score > game.highscore) {
+        document.getElementById('highscore').innerHTML = "High Score: " + game.score;
+    }
+};
+
 game.replaceZombie = function (i) {
     'use strict';
     
@@ -127,7 +163,7 @@ game.newZombie = function () {
     var enemySpeed, angle, zom;
     
     // Set up random enemy
-    enemySpeed = 1; //Math.floor((Math.random() + 1) * (Math.log(game.score + 1) / 2)) + 1;
+    enemySpeed = 2;
     zom = new Enemy(new Sprite('zombie'), new Sprite('explosion'), enemySpeed);
     
     // Set up zombie sprite
@@ -145,9 +181,14 @@ game.newZombie = function () {
     zom.destroySprite.frame_delay_factor = 5;
     
     // http://stackoverflow.com/a/9879291
-    angle = Math.random() * Math.PI * 2;
-    zom.sprite.x = Math.cos(angle) * game_canvas.width;
-    zom.sprite.y = Math.sin(angle) * game_canvas.width;
+    angle = Math.random() * (Math.PI * 2);
+    zom.sprite.x = (Math.sin(angle) * (game_canvas.width / 2)) +
+        (game_canvas.width / 2);
+    
+    zom.sprite.y = (Math.cos(angle) * (game_canvas.height / 2)) +
+        (game_canvas.height / 2);
+    
+    console.log(zom.sprite.x, zom.sprite.y);
     
     game.zombies.push(zom);
 };
@@ -155,14 +196,12 @@ game.newZombie = function () {
 game.rotatePlayer = function (event) {
     'use strict';
     
-    var x, y, rect;
+    var x, y;
     x = event.clientX;
     y = event.clientY;
     
     // Adjust coordinates for document coordinates
-    // BoundingClientRect code from: http://stackoverflow.com/a/11396681
-    rect = game_canvas.getBoundingClientRect();
-    game.player.sprite.setRotationTowards(x - rect.left, y - rect.top,
+    game.player.sprite.setRotationTowards(x - game.left, y - game.top,
                                           game_ctx, game_canvas);
 
     game.player.sprite.draw(game_ctx);
@@ -172,8 +211,9 @@ game.fireBullet = function (event) {
     'use strict';
     
     var bul = new Bullet(new Sprite('bullet'), game.player,
-               event.clientX, event.clientY,
-               bul_ctx, bul_canvas, window);
+                     event.clientX, event.clientY,
+                     bul_ctx, bul_canvas,
+                     game.left, game.top);
 
     bul.sprite.num_frames = 5;
     bul.sprite.frame_width = 20;
@@ -190,6 +230,15 @@ game.mainLoop = function () {
     
     game.newZombie();
     window.requestAnimationFrame(game.chase);
+};
+
+game.updateBounds = function () {
+    'use strict';
+    
+    // BoundingClientRect code from: http://stackoverflow.com/a/11396681
+    var rect = game_canvas.getBoundingClientRect();
+    game.left = rect.left;
+    game.top = rect.top;
 };
 
 // Run the main game when loaded
@@ -211,12 +260,18 @@ window.onload = function () {
     bul_canvas = document.getElementById('bullet_canvas');
     bul_ctx = bul_canvas.getContext('2d');
     
+    // Set up bounding stuff
+    game.updateBounds();
+    window.onresize = game.updateBounds;
+    
     // Set up sounds
     game.hitSound = document.getElementById('ow');
     game.fireSound = document.getElementById('fire');
     
     // Score
     game.score = 0;
+    game.updateScoreHTML();
+    game.highscore = game.loadHighScore();
 
     // Set up Player
     game.player = new Player(100, new Sprite('turret'));
@@ -239,7 +294,7 @@ window.onload = function () {
     
     // Set up health bar
     game.health_bar = new Sprite('health_bar');
-    game.health_bar.x = game.health_text.x + game.health_text.frame_width + 10;
+    game.health_bar.x = game.health_text.x + game.health_text.frame_width;
     game.health_bar.y = game.health_text.y;
     game.updateHealthBar();
     
@@ -250,6 +305,5 @@ window.onload = function () {
     };
     
     // Kick off main loop
-    // game.newZombie();
     game.mainLoop();
 };

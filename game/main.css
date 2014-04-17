@@ -1,5 +1,5 @@
 * {
-    font-family: Helvetica, sans-serif,
+    font-family: Helvetica, sans-serif;
 }
 
 body {
@@ -20,13 +20,20 @@ canvas {
 }
 
 .canvas_layer {
+    position: relative;
+    left: 0;
+    top: 0;
     margin-top: -800px;
 }
 
-p {
+.score {
     text-align: left;
 }
+    
+#score {
+    float: left;
+}
 
-button {
+#highscore {
     float: right;
 }
