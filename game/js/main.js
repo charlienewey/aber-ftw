@@ -241,9 +241,12 @@ game.updateHealthBar = function () {
     // Draw on context 'layer' that is in front of main game context
     // This is so that the sprites don't wipe over the health bar
     game.health_bar.clear(hud_ctx);
-    game.health_bar.frame_width = Math.floor(game.health_bar.img.width *
+    
+    if (game.player.health > 0) {
+        game.health_bar.frame_width = Math.floor(game.health_bar.img.width *
                                                 (game.player.health / 100));
-    game.health_bar.draw(hud_ctx);
+        game.health_bar.draw(hud_ctx);
+    }
 };
 
 game.loadHighScore = function () {
