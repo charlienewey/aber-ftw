@@ -12,10 +12,22 @@ canvas {
     height: 600px;
 }
 
+h1 {
+    margin-bottom: -0.1em;
+}
+
 header {
     margin: 0 auto;
     width: 800px;
     max-width: 800px;
+}
+
+li {
+    margin-top: 1em;
+}
+
+ul li li {
+    margin-top: 0;
 }
 
 p, ul, h3 {
@@ -122,6 +134,10 @@ p, ul, h3 {
 }
 
 .small {
-    margin-top: -2em;
     font-size: 70%;
+}
+
+.title_href {
+    display: inline;
+    float: right;
 }
