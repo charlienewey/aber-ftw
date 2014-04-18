@@ -139,6 +139,7 @@ game.begin = function () {
         if (game.running) {
             game.fireBullet(event);
         }
+        return false;
     };
 };
 
