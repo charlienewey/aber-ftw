@@ -23,7 +23,7 @@ game.chase = function () {
         for (i = 0; i < game.zombies.length; i += 1) {
             zom = game.zombies[i];
             if (zom.destroySprite.curr_frame > zom.sprite.num_frames + 1) {
-                zom.destroySprite.clear(game_ctx);
+                zom.destroySprite.clear(bul_ctx);
                 game.zombies.splice(i, 1);
             }
         }
@@ -44,15 +44,18 @@ game.chase = function () {
 
             if (game.player.collidingWith(zom, game.playerHealthDecrease)) {
                 if (game.player.health > 0) {
-                    // Destroy!
+                    // Make new zombie
                     zom.sprite.clear(game_ctx);
                     game.replaceZombie(i);
                 } else {
+                    // Game over
                     zom.sprite.clear(game_ctx);
                     
-                    game.running = false;
                     game.updateHighScore();
-                    console.log('Game over!');
+                    
+                    game.gameOver();
+                    
+                    break;
                 }
 
             } else {
@@ -82,14 +85,14 @@ game.chase = function () {
                 }
             }
         }
+        window.requestAnimationFrame(game.chase);
     }
-    window.requestAnimationFrame(game.chase);
 };
 
 game.playerHealthDecrease = function () {
     'use strict';
     
-    game.player.modifyHealth(-20);
+    game.player.modifyHealth(-10);
     game.updateHealthBar();
     game.hitSound.play();
 };
@@ -97,9 +100,10 @@ game.playerHealthDecrease = function () {
 game.playerShotZombie = function () {
     'use strict';
     
+    game.popSound.currentTime = 0;
+    game.popSound.play();
     game.score += (game.lastZom.sprite.sprite_offset + 1);
     game.updateScoreHTML();
-    console.log('Score: ', game.score);
 };
 
 game.updateHealthBar = function () {
@@ -222,13 +226,6 @@ game.fireBullet = function (event) {
     game.fireSound.play();
 };
 
-game.mainLoop = function () {
-    'use strict';
-    
-    game.newZombie();
-    window.requestAnimationFrame(game.chase);
-};
-
 game.updateBounds = function () {
     'use strict';
     
@@ -238,16 +235,51 @@ game.updateBounds = function () {
     game.top = rect.top;
 };
 
-// Run the main game when loaded
-window.onload = function () {
+game.pauseResume = function () {
+    'use strict';
+    
+    if (game.running) {
+        game.running = false;
+
+        // Stop mouse following turret
+        window.onmousemove = null;
+
+        game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+        bul_ctx.clearRect(0, 0, bul_canvas.width, bul_canvas.height);
+        hud_ctx.clearRect(0, 0, hud_canvas.width, hud_canvas.height);
+
+        // Draw pause image
+        game.pauseScreen.draw(game_ctx);
+    } else {
+        game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+        game.running = true;
+        game.begin();
+    }
+};
+
+game.gameOver = function () {
+    'use strict';
+    
+    game.pauseResume();
+    game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+    game.gameOverScreen.draw(game_ctx);
+    
+    // Disable interactions
+    window.onkeydown = null;
+    window.onmousedown = null;
+    
+    hud_canvas.onmousedown = function () {
+        game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+        game.newGame();
+    };
+};
+
+game.setup = function () {
     'use strict';
     
     // Load game canvas data into variables
     game_canvas = document.getElementById('game_canvas');
     game_ctx = game_canvas.getContext('2d');
-    game_canvas.onmousedown = function () {
-        return false;
-    };
     
     // Load info canvas data into variables
     hud_canvas = document.getElementById('hud_canvas');
@@ -257,25 +289,59 @@ window.onload = function () {
     bul_canvas = document.getElementById('bullet_canvas');
     bul_ctx = bul_canvas.getContext('2d');
     
+    // Set up game screens
+    game.startScreen = new Sprite('start_screen');
+    game.startScreen.centreSprite(game_canvas, game_ctx);
+    game.gameOverScreen = new Sprite('game_over_screen');
+    game.gameOverScreen.centreSprite(game_canvas, game_ctx);
+    game.pauseScreen = new Sprite('pause_screen');
+    game.pauseScreen.centreSprite(game_canvas, game_ctx);
+    
+    // Set up Player
+    game.player = new Player(100, new Sprite('turret'));
+    game.player.sprite.centreSprite(game_canvas, game_ctx);
+    
+    // Set up sounds
+    game.hitSound = document.getElementById('ow');
+    game.fireSound = document.getElementById('fire');
+    game.popSound = document.getElementById('pop');
+    
     // Set up bounding stuff
     game.updateBounds();
     window.onresize = game.updateBounds;
     window.onscroll = game.updateBounds;
     
-    // Set up sounds
-    game.hitSound = document.getElementById('ow');
-    game.fireSound = document.getElementById('fire');
+    // Set up health bar text
+    game.health_text = new Sprite('health_text');
+    game.health_text.x = 20;
+    game.health_text.y = 20;
+    
+    // Set up health bar
+    game.health_bar = new Sprite('health_bar');
+    game.health_bar.x = game.health_text.x + game.health_text.frame_width;
+    game.health_bar.y = game.health_text.y;
+    
+    game.newGame();
+};
+
+// Run the main game when loaded
+game.newGame = function () {
+    'use strict';
+    
+    // Stop people being able to click/drag on canvas - annoying while playing
+    game_canvas.onmousedown = function () {
+        return false;
+    };
+    
+    // Health bar
+    game.player.health = 100;
+    game.health_bar.clear(hud_ctx);
+    game.health_bar.frame_width = game.health_bar.img.width;
     
     // Score
     game.score = 0;
     game.updateScoreHTML();
     game.highscore = game.loadHighScore();
-
-    // Set up Player
-    game.player = new Player(100, new Sprite('turret'));
-    game.player.centrePlayer(game_canvas, game_ctx);
-    game.player.sprite.draw(game_ctx);
-    window.onmousemove = game.rotatePlayer;
     
     // Set up zombie list
     game.zombies = [];
@@ -283,40 +349,55 @@ window.onload = function () {
     
     // Set up bullet list
     game.bullets = [];
-    window.onmousedown = function (event) {
-        if (game.running) {
-            game.fireBullet(event);
-        }
-    };
-    
-    hud_canvas.onmousedown = function () {
-        if (!game.running) {
-            // Kick off main loop
-            game.running = true;
-            game.mainLoop();
-            
-            // Stop game being able to be started twice!
-            hud_canvas.onmousedown = null;
-        }
-    };
-    
-    // Set up health bar text
-    game.health_text = new Sprite('health_text');
-    game.health_text.x = 20;
-    game.health_text.y = 20;
-    game.health_text.draw(hud_canvas.getContext('2d'));
-    
-    // Set up health bar
-    game.health_bar = new Sprite('health_bar');
-    game.health_bar.x = game.health_text.x + game.health_text.frame_width;
-    game.health_bar.y = game.health_text.y;
-    game.updateHealthBar();
     
     // Set up params for running and pausing
     game.running = false;
+    
+    // Draw start screen
+    game.startScreen.draw(game_ctx);
+    
+    // Allow game to be started
+    hud_canvas.onmousedown = function () {
+        // Kick off main loop
+        game.running = true;
+        game.newZombie();
+        game.begin();
+
+        // Stop game being able to be started twice!
+        hud_canvas.onmousedown = null;
+    };
+};
+
+game.begin = function () {
+    'use strict';
+    
+    // Clear start screen
+    game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+    
+    // Player
+    game.player.sprite.draw(game_ctx);
+    window.onmousemove = game.rotatePlayer;
+    
+    // Draw health text
+    game.health_text.draw(hud_canvas.getContext('2d'));
+    
+    // Draw health bar
+    game.updateHealthBar();
+    
+    // Set up pausing of game
     window.onkeydown = function (event) {
         if (event.keyCode === 27) {
-            game.running = !game.running; // Toggle running state
+            game.pauseResume();
+        }
+    };
+    
+    // Start animation
+    game.chase();
+    
+    // Set up shooting mechanism
+    window.onmousedown = function (event) {
+        if (game.running) {
+            game.fireBullet(event);
         }
     };
 };

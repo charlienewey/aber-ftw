@@ -5,6 +5,8 @@
 function Sprite(img_id) {
     'use strict';
     
+    console.log(img_id);
+    
     // Load image
     this.img = new Image();
     this.img.src = document.getElementById(img_id).src;
@@ -102,6 +104,14 @@ Sprite.prototype.clear = function (ctx) {
     
     ctx.translate(-this.x, -this.y); // Restore origin
     ctx.restore(); // Restore rotation
+};
+
+// Centres the sprite on the screen
+Sprite.prototype.centreSprite = function (canvas, ctx) {
+    'use strict';
+    
+    this.x = (canvas.width - this.frame_width) / 2;
+    this.y = (canvas.height - this.frame_height) / 2;
 };
 
 // Move image to new location

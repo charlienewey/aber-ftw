@@ -84,10 +84,10 @@
             
                 <!-- Placeholder for scores -->
                 <div id="score_holder">
-                  <h3 id="score"></h3>
+                  <h3 id="score">Score: 0</h3>
                 </div>
                 <div id="highscore_holder">
-                    <h3 id="highscore"></h3>
+                    <h3 id="highscore">High Score: 0</h3>
                 </div>
         </section>
         
@@ -95,6 +95,9 @@
 
         <!-- Preload images (foolproof method) -->
         <div class="preload">
+            <img alt="Start screen" src="img/start_screen.png" id="start_screen" />
+            <img alt="Pause screen" src="img/pause_screen.png" id="pause_screen" />
+            <img alt="Game over screen" src="img/game_over_screen.png" id="game_over_screen" />
             <img alt="Zombie sprite" src="img/zombie.png" id="zombie" />
             <img alt="Explosion sprite" src="img/explosion.png" id="explosion" />
             <img alt="Turret image" src="img/turret.png" id="turret" />
@@ -108,6 +111,9 @@
             </audio>
             <audio id="fire">
                 <source src="snd/fire.mp3" type="audio/mp3">
+            </audio>
+            <audio id="pop">
+                <source src="snd/pop.mp3" type="audio/mp3">
             </audio>
         </div>
         

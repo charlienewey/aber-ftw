@@ -1,3 +1,4 @@
+/*global game*/
 /*jslint browser: true*/
 
 var helpShowing = false;
@@ -5,7 +6,8 @@ function showHideHelp() {
     'use strict';
     
     if (game.running) {
-        game.running = false;
+        // This allows user to resume play in their own time
+        game.pauseResume();
     }
 
     if (!helpShowing) {
@@ -16,3 +18,5 @@ function showHideHelp() {
     
     helpShowing = !helpShowing;
 }
+
+window.onload = game.setup();
