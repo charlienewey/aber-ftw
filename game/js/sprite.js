@@ -5,8 +5,6 @@
 function Sprite(img_id) {
     'use strict';
     
-    console.log(img_id);
-    
     // Load image
     this.img = new Image();
     this.img.src = document.getElementById(img_id).src;

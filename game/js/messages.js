@@ -1,4 +1,4 @@
-/*global game*/
+/*global game, game_ctx*/
 /*jslint browser: true*/
 
 var helpShowing = false;
@@ -19,4 +19,9 @@ function showHideHelp() {
     helpShowing = !helpShowing;
 }
 
-window.onload = game.setup();
+window.onload = function () {
+    'use strict';
+    
+    game.setup();
+    game.startScreen.draw(game_ctx);
+};

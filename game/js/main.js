@@ -23,7 +23,7 @@ game.chase = function () {
         for (i = 0; i < game.zombies.length; i += 1) {
             zom = game.zombies[i];
             if (zom.destroySprite.curr_frame > zom.sprite.num_frames + 1) {
-                zom.destroySprite.clear(bul_ctx);
+                zom.destroySprite.clear(game_ctx);
                 game.zombies.splice(i, 1);
             }
         }
