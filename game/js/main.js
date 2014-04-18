@@ -13,6 +13,135 @@ var game,
 // Set up main Game
 game = {};
 
+// Main setup function for page load
+game.setup = function () {
+    'use strict';
+    
+    // Load game canvas data into variables
+    game_canvas = document.getElementById('game_canvas');
+    game_ctx = game_canvas.getContext('2d');
+    
+    // Load info canvas data into variables
+    hud_canvas = document.getElementById('hud_canvas');
+    hud_ctx = hud_canvas.getContext('2d');
+    
+    // Load bullet canvas data into variables
+    bul_canvas = document.getElementById('bullet_canvas');
+    bul_ctx = bul_canvas.getContext('2d');
+    
+    // Set up game screens
+    game.startScreen = new Sprite('start_screen');
+    game.startScreen.centreSprite(game_canvas, game_ctx);
+    game.gameOverScreen = new Sprite('game_over_screen');
+    game.gameOverScreen.centreSprite(game_canvas, game_ctx);
+    game.pauseScreen = new Sprite('pause_screen');
+    game.pauseScreen.centreSprite(game_canvas, game_ctx);
+    
+    // Set up Player
+    game.player = new Player(100, new Sprite('turret'));
+    game.player.sprite.centreSprite(game_canvas, game_ctx);
+    
+    // Set up sounds
+    game.hitSound = document.getElementById('ow');
+    game.fireSound = document.getElementById('fire');
+    game.popSound = document.getElementById('pop');
+    
+    // Set up bounding stuff
+    game.updateBounds();
+    window.onresize = game.updateBounds;
+    window.onscroll = game.updateBounds;
+    
+    // Set up health bar text
+    game.health_text = new Sprite('health_text');
+    game.health_text.x = 20;
+    game.health_text.y = 20;
+    
+    // Set up health bar
+    game.health_bar = new Sprite('health_bar');
+    game.health_bar.x = game.health_text.x + game.health_text.frame_width;
+    game.health_bar.y = game.health_text.y;
+    
+    game.newGame();
+};
+
+// Run the main game when loaded
+game.newGame = function () {
+    'use strict';
+    
+    // Stop people being able to click/drag on canvas - annoying while playing
+    game_canvas.onmousedown = function () {
+        return false;
+    };
+    
+    // Health bar
+    game.player.health = 100;
+    game.health_bar.clear(hud_ctx);
+    game.health_bar.frame_width = game.health_bar.img.width;
+    
+    // Score
+    game.score = 0;
+    game.updateScoreHTML();
+    game.highscore = game.loadHighScore();
+    
+    // Set up zombie list
+    game.zombies = [];
+    game.lastZom = null;
+    
+    // Set up bullet list
+    game.bullets = [];
+    
+    // Set up params for running and pausing
+    game.running = false;
+    
+    // Draw start screen
+    game.startScreen.draw(game_ctx);
+    
+    // Allow game to be started
+    hud_canvas.onmousedown = function () {
+        // Kick off main loop
+        game.running = true;
+        game.newZombie();
+        game.begin();
+
+        // Stop game being able to be started twice!
+        hud_canvas.onmousedown = null;
+    };
+};
+
+game.begin = function () {
+    'use strict';
+    
+    // Clear start screen
+    game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+    
+    // Player
+    game.player.sprite.draw(game_ctx);
+    window.onmousemove = game.rotatePlayer;
+    
+    // Draw health text
+    game.health_text.draw(hud_canvas.getContext('2d'));
+    
+    // Draw health bar
+    game.updateHealthBar();
+    
+    // Set up pausing of game
+    window.onkeydown = function (event) {
+        if (event.keyCode === 27) {
+            game.pauseResume();
+        }
+    };
+    
+    // Start animation
+    game.chase();
+    
+    // Set up shooting mechanism
+    window.onmousedown = function (event) {
+        if (game.running) {
+            game.fireBullet(event);
+        }
+    };
+};
+
 game.chase = function () {
     'use strict';
     
@@ -271,133 +400,5 @@ game.gameOver = function () {
     hud_canvas.onmousedown = function () {
         game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
         game.newGame();
-    };
-};
-
-game.setup = function () {
-    'use strict';
-    
-    // Load game canvas data into variables
-    game_canvas = document.getElementById('game_canvas');
-    game_ctx = game_canvas.getContext('2d');
-    
-    // Load info canvas data into variables
-    hud_canvas = document.getElementById('hud_canvas');
-    hud_ctx = hud_canvas.getContext('2d');
-    
-    // Load bullet canvas data into variables
-    bul_canvas = document.getElementById('bullet_canvas');
-    bul_ctx = bul_canvas.getContext('2d');
-    
-    // Set up game screens
-    game.startScreen = new Sprite('start_screen');
-    game.startScreen.centreSprite(game_canvas, game_ctx);
-    game.gameOverScreen = new Sprite('game_over_screen');
-    game.gameOverScreen.centreSprite(game_canvas, game_ctx);
-    game.pauseScreen = new Sprite('pause_screen');
-    game.pauseScreen.centreSprite(game_canvas, game_ctx);
-    
-    // Set up Player
-    game.player = new Player(100, new Sprite('turret'));
-    game.player.sprite.centreSprite(game_canvas, game_ctx);
-    
-    // Set up sounds
-    game.hitSound = document.getElementById('ow');
-    game.fireSound = document.getElementById('fire');
-    game.popSound = document.getElementById('pop');
-    
-    // Set up bounding stuff
-    game.updateBounds();
-    window.onresize = game.updateBounds;
-    window.onscroll = game.updateBounds;
-    
-    // Set up health bar text
-    game.health_text = new Sprite('health_text');
-    game.health_text.x = 20;
-    game.health_text.y = 20;
-    
-    // Set up health bar
-    game.health_bar = new Sprite('health_bar');
-    game.health_bar.x = game.health_text.x + game.health_text.frame_width;
-    game.health_bar.y = game.health_text.y;
-    
-    game.newGame();
-};
-
-// Run the main game when loaded
-game.newGame = function () {
-    'use strict';
-    
-    // Stop people being able to click/drag on canvas - annoying while playing
-    game_canvas.onmousedown = function () {
-        return false;
-    };
-    
-    // Health bar
-    game.player.health = 100;
-    game.health_bar.clear(hud_ctx);
-    game.health_bar.frame_width = game.health_bar.img.width;
-    
-    // Score
-    game.score = 0;
-    game.updateScoreHTML();
-    game.highscore = game.loadHighScore();
-    
-    // Set up zombie list
-    game.zombies = [];
-    game.lastZom = null;
-    
-    // Set up bullet list
-    game.bullets = [];
-    
-    // Set up params for running and pausing
-    game.running = false;
-    
-    // Draw start screen
-    game.startScreen.draw(game_ctx);
-    
-    // Allow game to be started
-    hud_canvas.onmousedown = function () {
-        // Kick off main loop
-        game.running = true;
-        game.newZombie();
-        game.begin();
-
-        // Stop game being able to be started twice!
-        hud_canvas.onmousedown = null;
-    };
-};
-
-game.begin = function () {
-    'use strict';
-    
-    // Clear start screen
-    game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
-    
-    // Player
-    game.player.sprite.draw(game_ctx);
-    window.onmousemove = game.rotatePlayer;
-    
-    // Draw health text
-    game.health_text.draw(hud_canvas.getContext('2d'));
-    
-    // Draw health bar
-    game.updateHealthBar();
-    
-    // Set up pausing of game
-    window.onkeydown = function (event) {
-        if (event.keyCode === 27) {
-            game.pauseResume();
-        }
-    };
-    
-    // Start animation
-    game.chase();
-    
-    // Set up shooting mechanism
-    window.onmousedown = function (event) {
-        if (game.running) {
-            game.fireBullet(event);
-        }
     };
 };
