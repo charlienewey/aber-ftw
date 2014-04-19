@@ -401,8 +401,10 @@ game.gameOver = function () {
     window.onkeydown = null;
     window.onmousedown = null;
     
-    hud_canvas.onmousedown = function () {
-        game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
-        game.newGame();
-    };
+    window.setTimeout(function () {
+        hud_canvas.onmousedown = function () {
+            game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
+            game.newGame();
+        };
+    }, 1000);
 };
