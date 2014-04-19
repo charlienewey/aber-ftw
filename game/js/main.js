@@ -359,6 +359,8 @@ game.fireBullet = function (event) {
     game.fireSound.play();
 };
 
+// Updates the canvas' coordinates (used on resize or scroll)
+// This keeps mouse tracking working
 game.updateBounds = function () {
     'use strict';
     
@@ -368,6 +370,7 @@ game.updateBounds = function () {
     game.top = rect.top;
 };
 
+// Toggles pausing and resuming
 game.pauseResume = function () {
     'use strict';
     
@@ -401,6 +404,7 @@ game.gameOver = function () {
     window.onkeydown = null;
     window.onmousedown = null;
     
+    // Add timeout
     window.setTimeout(function () {
         hud_canvas.onmousedown = function () {
             game_ctx.clearRect(0, 0, game_canvas.width, game_canvas.height);
