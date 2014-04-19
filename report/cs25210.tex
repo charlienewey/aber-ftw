@@ -20,6 +20,7 @@
 \usepackage{graphicx} % Images
 \usepackage{tabularx} % Tables
 \usepackage[colorlinks]{hyperref} % For URLs
+\usepackage{lscape}
 
 \hypersetup{ % Set up hyperref colours (http://stackoverflow.com/q/2770347)
 	citecolor=Red
@@ -58,7 +59,7 @@
 }
 
 \author{\textbf{Charles Callum Newey (ccn4)}}
-\date{}
+\date{Word count: 1111}
 
 % Make title page, ToC and other introductory elements
 \begin{document}
@@ -71,14 +72,14 @@
 \begin{section}{Executive Summary}
     The game that I decided to develop is simple in nature, as I felt that a game need not be complex to be fun to play or visually pleasing. The game (called Zombie Pendemic - \textit{pun intended}) is a simple mouse-based shooter - the user plays as a ``turret'' in the centre of the canvas, battling against a never-ending onslaught of zombies. \\
     
-    The player would have to ``shoot'' the zombies by clicking in the same direction. The player's score would increase when zombies were hit by bullets - with different score values for each ``type'' of zombie. The idea was for the game to get more difficult for the player over time. This was fairly straightforward when it came to implementation - the number of zombies on-screen simply increases as a function of the player's score. The zombies also increase in speed as the game progresses, ensuring that each game lasts for just enough time to stay interesting. \\
+    The player would have to ``shoot'' the zombies by clicking in the same direction. The player's score would increase when zombies were hit by bullets - with different score values for each ``type'' of zombie. The idea was for the game to get more difficult for the player over time. This was fairly straightforward when it came to implementation - the number of zombies on-screen simply increases as a function of the player's score. The zombies also increase in speed as the game progresses, ensuring that each game lasts for just enough time to stay interesting. Storyboards are included at the end of this document in the ``Appendices'' section (\ref{appendices}). \\
     
     One of the major design choices that I made early on in development was to make all of the sprites and sounds myself - this ensured that I had complete control of the look and feel of the game. This proved to be a lot more work than I had originally anticipated, but I am satisfied with the result.
 \end{section}
 
 \begin{section}{Technical Overview}
     \begin{subsection}{Technologies Used}
-    		Obviously, the broad architectural choices for the game were pre-defined - that is, HTML5, CSS and JavaScript. However, web application development is complicated, and involves more than just language and rendering choices. In keeping with my original desire to keep the project as original as possible, I have used no external JavaScript libraries (aside from Google Analytics\cite{GAnalytics}), or in fact, anything more complex than a font from Google's Font API\cite{GFonts}. This allows me to have full control over the quality and performance of my code base. \\
+    		Obviously, the broad architectural choices for the game were pre-defined - that is, HTML5, CSS and JavaScript. However, web application development is complicated and involves more than just language and rendering choices. In keeping with my original desire to keep the project as original as possible, I have used no external programming libraries (aside from Google Analytics\cite{GAnalytics}), and nothing other than a font from Google's Font API\cite{GFonts}. This allowed me to have full control over the quality and performance of my code base. \\
     		
     		I dislike the idea of using a library such as JQuery or MooTools, as there are few advantages that I could see for this assignment. JQuery is particularly useful for manipulating the DOM and making AJAX calls (amongst other things), but in this instance, I didn't need either of those functionalities - the extra functionality would have been somewhat wasted.
     \end{subsection}
@@ -131,6 +132,33 @@
 \begin{section}{References}
 	\bibliographystyle{acm}
 	\bibliography{References}
+\end{section}
+
+\begin{section}{Appendices}
+\label{appendices}
+    \begin{subsection}{Storyboards}
+        \begin{landscape}
+            \begin{figure}[htp]
+	    		\centering
+                    \includegraphics[height=0.6\columnwidth]{img/storyboard_1}
+	    		\caption{First storyboard in sequence}
+    		\end{figure}
+    		
+    		\clearpage
+    		\begin{figure}[htp]
+	    		\centering
+                    \includegraphics[height=0.7\columnwidth]{img/storyboard_2}
+	    		\caption{Second storyboard in sequence}
+    		\end{figure}
+    		
+    		\clearpage
+    		\begin{figure}[htp]
+	    		\centering
+                    \includegraphics[width=0.8\columnwidth]{img/storyboard_3}
+	    		\caption{Third storyboard in sequence}
+    		\end{figure}
+        \end{landscape}
+    \end{subsection}
 \end{section}
 \end{document}
 
